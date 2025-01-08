@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ClientController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -18,7 +19,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+//ROUTES FOR CATEGORIES
 Route::middleware('auth')->group(function () {
+    Route::get('/categories/getCategories', [CategoryController::class, 'getCategories'])->name('categories.json');
     Route::resource('/categories', CategoryController::class)->names([
     'index' => 'categories.index',
         'create' => 'categories.create',
@@ -27,8 +30,24 @@ Route::middleware('auth')->group(function () {
         'edit' => 'categories.edit',
         'update' => 'categories.update',
         'destroy' => 'categories.destroy'
-    ]);
+    ]);   
 });
+
+//ROUTES FOR CLIENTS
+Route::middleware('auth')->group(function () {
+    Route::get('/clients/getClients', [ClientController::class, 'getClients'])->name('clients.json');
+    Route::resource('/clients', ClientController::class)->names([
+    'index' => 'clients.index',
+        'create' => 'clients.create',
+        'store' => 'clients.store',
+        'show' => 'clients.show',
+        'edit' => 'clients.edit',
+        'update' => 'clients.update',
+        'destroy' => 'clients.destroy'
+    ]);   
+});
+
+
 
 
 

@@ -51,7 +51,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link " href="#">
+                <a class="nav-link {{ request()->is('clients*') ? 'bg-gradient-primary active' : '' }}" href="{{ route('clients.index') }}">
                     <div class="icon icon-shape icon-sm shadow border-radius-md bg-dark text-center me-2 d-flex align-items-center justify-content-center">
                     <i class="fas fa-id-card" style="font-size: 20px;"></i>
                     </div>
