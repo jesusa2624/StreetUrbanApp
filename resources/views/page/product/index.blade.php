@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
-@section('title', '- Clientes')
+@section('title', '- Productos')
 
-@section('pages', 'Clientes')
+@section('pages', 'Productos')
 
 @section('content')
 
@@ -13,24 +13,24 @@
                     <div class="card-header pb-0">
                         <div class="row">
                             <div class="col-lg-6 col-7">
-                                <h6>Clientes</h6>
+                                <h6>Productos</h6>
                             </div>
                             <div class="col-lg-6 col-5 my-auto text-end">
                                 <div class="dropdown float-lg-end pe-4">
                                     <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                        data-bs-target="#modalNuevoCliente">
-                                        + Nuevo Cliente
+                                        data-bs-target="#modalNuevoProducto">
+                                        + Nuevo Producto
                                     </button>
                                 </div>
                             </div>
 
                             <!-- Modal -->
-                            <div class="modal fade" id="modalNuevoCliente" tabindex="-1"
-                                aria-labelledby="modalNuevoClienteLabel" aria-hidden="true">
+                            <div class="modal fade" id="modalNuevoProducto" tabindex="-1"
+                                aria-labelledby="modalNuevoProductoLabel" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="modalNuevoClienteLabel">Registro de Cliente
+                                            <h5 class="modal-title" id="modalNuevoProductoLabel">Registro de Cliente
                                             </h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                 aria-label="Close"></button>
@@ -39,35 +39,39 @@
                                             <form id="formNuevoCliente">
                                                 <div class="mb-3">
                                                     <label for="name" class="form-label">Nombre</label>
-                                                    <input type="text" class="form-control" id="name"
-                                                        name="name" placeholder="Nombre del cliente" required>
+                                                    <input type="text" class="form-control" id="name" name="name"
+                                                        placeholder="Nombre del producto" required>
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label for="dni" class="form-label">DNI</label>
-                                                    <input type="number" class="form-control" id="dni"
-                                                        name="dni" placeholder="DNI del cliente" required>
+                                                    <label for="code" class="form-label">Código de Barras</label>
+                                                    <input type="text" class="form-control" id="code" name="code" readonly placeholder="Generando código..." />
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label for="ruc" class="form-label">RUC</label>
-                                                    <input type="number" class="form-control" id="ruc"
-                                                        name="ruc" placeholder="RUC del cliente" required>
+                                                    <label for="sell_price" class="form-label">Precio de Venta</label>
+                                                    <input type="number" class="form-control" id="sell_price"
+                                                        name="sell_price" placeholder="Precio de Venta" required>
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label for="phone" class="form-label">Celular</label>
-                                                    <input type="number" class="form-control" id="phone"
-                                                        name="phone" placeholder="Numero del cliente" required>
+                                                    <label for="category_id" class="form-label">Categoria</label>
+                                                    <select class="form-control" name="category_id" id="category_id">
+                                                        <option value="">Cargando categorias...</option>
+                                                    </select>
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label for="address" class="form-label">Dirección</label>
-                                                    <input type="text" class="form-control" id="address"
-                                                        name="address" placeholder="Direccion del cliente" required>
+                                                    <label for="provider_id" class="form-label">Proveedor</label>
+                                                    <select class="form-control" name="provider_id" id="provider_id">
+                                                        <option value="">Cargando categorias...</option>
+                                                    </select>
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label for="email" class="form-label">Correo electronico</label>
-                                                    <input type="email" class="form-control" id="email"
-                                                        name="email" placeholder="example@gmail.com" required>
+                                                    <label for="picture" class="form-label">Imagen del Producto</label>
+                                                    <input type="file" name="image" id="image" class="form-control"/>
                                                 </div>
-                                                <input type="hidden" id="idCliente">
+                                                <div class="mb-3">
+                                                    <!-- Contenedor para la vista previa -->
+                                                    <img id="preview" alt="Vista previa de la imagen" class="img-thumbnail" style="max-height: 200px; display: none;" />
+                                                </div>
+                                                <input type="hidden" id="idProduct">
                                             </form>
                                         </div>
                                         <div class="modal-footer">
@@ -96,15 +100,15 @@
                                         </th>
                                         <th
                                             class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                            DNI
+                                            Stock
                                         </th>
                                         <th
                                             class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                            Celular
+                                            Estado
                                         </th>
                                         <th
                                             class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                            Correo
+                                            Categoria
                                         </th>
                                         <th
                                             class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
@@ -131,12 +135,38 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
-        const clientsJsonUrl = "{{ route('clients.json') }}";
+        const productsJsonUrl = "{{ route('products.json') }}";
     </script>
-    
+    <script>
+        document.getElementById('image').addEventListener('change', function(event) {
+            const file = event.target.files[0]; // Obtiene el archivo seleccionado
+            const preview = document.getElementById('preview');
 
-    <script src="{{ asset('assets/js/client/listado.js') }}"></script>
-    <script src="{{ asset('assets/js/client/registro.js') }}"></script>
-    <script src="{{ asset('assets/js/client/modal.js') }}"></script>
-    <script src="{{ asset('assets/js/client/eliminar.js') }}"></script>
+            if (file) {
+                const reader = new FileReader();
+
+                // Carga la imagen y genera la vista previa
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block'; // Muestra la imagen
+                };
+
+                reader.readAsDataURL(file); // Lee el archivo seleccionado como DataURL
+            } else {
+                // Oculta la vista previa si no se selecciona un archivo
+                preview.src = '';
+                preview.style.display = 'none';
+            }
+        });
+    </script>
+
+
+
+    <script src="{{ asset('assets/js/product/listado.js') }}"></script>
+    <script src="{{ asset('assets/js/product/registro.js') }}"></script>
+    <script src="{{ asset('assets/js/product/modal.js') }}"></script>
+    <script src="{{ asset('assets/js/product/eliminar.js') }}"></script>
+    <script src="{{ asset('assets/js/product/select.js') }}"></script>
+    <script src="{{ asset('assets/js/product/codigo_barras.js') }}"></script>
+
 @endpush

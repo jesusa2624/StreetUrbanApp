@@ -3,6 +3,8 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProviderController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -46,6 +48,36 @@ Route::middleware('auth')->group(function () {
         'destroy' => 'clients.destroy'
     ]);   
 });
+
+//ROUTES FOR PROVIDERS
+Route::middleware('auth')->group(function () {
+    Route::get('/providers/getProviders', [ProviderController::class, 'getProviders'])->name('providers.json');
+    Route::resource('/providers', ProviderController::class)->names([
+    'index' => 'providers.index',
+        'create' => 'providers.create',
+        'store' => 'providers.store',
+        'show' => 'providers.show',
+        'edit' => 'providers.edit',
+        'update' => 'providers.update',
+        'destroy' => 'providers.destroy'
+    ]);   
+});
+
+//ROUTES FOR PRODUCTS
+Route::middleware('auth')->group(function () {
+    Route::get('/products/getProducts', [ProductController::class, 'getProducts'])->name('products.json');
+    Route::get('/products/next-barcode', [ProductController::class, 'getNextBarcode'])->name('products.nextBarcode');
+    Route::resource('/products', ProductController::class)->names([
+        'index' => 'products.index',
+        'create' => 'products.create',
+        'store' => 'products.store',
+        'show' => 'products.show',
+        'edit' => 'products.edit',
+        'update' => 'products.update',
+        'destroy' => 'products.destroy'
+    ]);
+});
+
 
 
 

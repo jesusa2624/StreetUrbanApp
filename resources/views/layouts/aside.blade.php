@@ -10,7 +10,7 @@
         <ul class="navbar-nav">
             
             <li class="nav-item">
-                <a class="nav-link {{ request()->is('index') ? 'bg-gradient-primary active' : '' }}" href="{{ url('/index') }}">
+                <a class="nav-link {{ request()->is('home*') ? 'bg-gradient-primary active' : '' }}" href="{{ url('/home') }}">
                     <div class="icon icon-shape icon-sm shadow border-radius-md bg-dark text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="fas fa-home" style="font-size: 20px;"></i>
                     </div>
@@ -43,7 +43,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link " href="#">
+                <a class="nav-link {{ request()->is('products*') ? 'bg-gradient-primary active' : '' }}" href="{{route('products.index')}}">
                     <div class="icon icon-shape icon-sm shadow border-radius-md bg-dark text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="fas fa-tags" style="font-size: 20px;"></i>
                     </div>
@@ -52,6 +52,7 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link {{ request()->is('clients*') ? 'bg-gradient-primary active' : '' }}" href="{{ route('clients.index') }}">
+
                     <div class="icon icon-shape icon-sm shadow border-radius-md bg-dark text-center me-2 d-flex align-items-center justify-content-center">
                     <i class="fas fa-id-card" style="font-size: 20px;"></i>
                     </div>
@@ -67,7 +68,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link " href="#">
+                <a class="nav-link {{ request()->is('providers*') ? 'bg-gradient-primary active' : '' }}" href="{{ route('providers.index') }}">
                     <div class="icon icon-shape icon-sm shadow border-radius-md bg-dark text-center me-2 d-flex align-items-center justify-content-center">
                     <i class="fas fa-truck" style="font-size: 18px;"></i>
                     </div>
