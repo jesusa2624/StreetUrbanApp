@@ -1,30 +1,3 @@
-document.getElementById('modalNuevoProducto').addEventListener('show.bs.modal', function () {
-    // Realiza una solicitud al servidor para obtener el siguiente código de barras
-    fetch('/products/next-barcode', {
-        headers: {
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-        },
-    })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Error al obtener el código de barras');
-            }
-            return response.json();
-        })
-        .then(data => {
-            document.getElementById('code').value = data.nextCode; // Asigna el próximo código de barras
-        })
-        .catch(error => {
-            console.error('Error al obtener el código de barras:', error);
-            Swal.fire({
-                title: 'Error al cargar el código',
-                text: 'No se pudo obtener el próximo código de barras. Intente nuevamente.',
-                icon: 'error',
-                confirmButtonText: 'Aceptar',
-            });
-        });
-});
-
 document.getElementById('submitForm').addEventListener('click', function () {
     const id = document.getElementById('idProduct').value;
     const name = document.getElementById('name').value;
@@ -35,8 +8,8 @@ document.getElementById('submitForm').addEventListener('click', function () {
     const image = document.getElementById('image').files[0]; // Obtener el archivo real
     const stock = 0;
 
-    const url = id ? `/products/${id}` : '/products'; // Si hay un ID, es edición, sino es creación
-    const method = id ? 'POST' : 'POST'; // Cambiar PUT por POST si no se está utilizando `_method` en Laravel.
+    const url = isEditMode ? `/products/${id}` : '/products';
+    const method = isEditMode ? 'PUT' : 'POST'; // Usar PUT para editar, POST para crear
 
     // Crear un FormData para manejar los datos
     const formData = new FormData();
@@ -50,8 +23,13 @@ document.getElementById('submitForm').addEventListener('click', function () {
         formData.append('image', image);
     }
 
+    // Agregar `_method` si es una actualización
+    if (isEditMode) {
+        formData.append('_method', 'PUT');
+    }
+
     fetch(url, {
-        method: method,
+        method: 'POST', // Siempre usamos POST para Laravel con _method
         headers: {
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
         },
@@ -64,14 +42,15 @@ document.getElementById('submitForm').addEventListener('click', function () {
             return response.json();
         })
         .then(data => {
-            console.log('Producto registrado:', data);
             Swal.fire({
-                title: '¡Registro exitoso!',
-                text: 'El producto fue registrado correctamente.',
+                title: isEditMode ? '¡Actualización exitosa!' : '¡Registro exitoso!',
+                text: isEditMode
+                    ? 'El producto fue actualizado correctamente.'
+                    : 'El producto fue registrado correctamente.',
                 icon: 'success',
                 confirmButtonText: 'Aceptar',
             }).then(() => {
-                const modal = bootstrap.Modal.getInstance(document.getElementById('modalNuevoProducto'));
+                const modal = bootstrap.Modal.getInstance(document.getElementById('modalNuevoProduct'));
                 modal.hide();
                 cargarProducts(); // Recarga la tabla de productos
             });
@@ -80,10 +59,9 @@ document.getElementById('submitForm').addEventListener('click', function () {
             console.error('Error en la solicitud:', error);
             Swal.fire({
                 title: '¡Error!',
-                text: 'Hubo un problema al registrar el producto.',
+                text: 'Hubo un problema al registrar/actualizar el producto.',
                 icon: 'error',
                 confirmButtonText: 'Intentar de nuevo',
             });
         });
 });
-

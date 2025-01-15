@@ -25,6 +25,7 @@
     <script defer data-site="YOUR_DOMAIN_HERE" src="https://api.nepcha.com/js/nepcha-analytics.js"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
+
     @stack('styles')
 
 </head>

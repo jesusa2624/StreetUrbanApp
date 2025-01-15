@@ -5,6 +5,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProviderController;
+use App\Http\Controllers\PurchaseController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -75,6 +76,20 @@ Route::middleware('auth')->group(function () {
         'edit' => 'products.edit',
         'update' => 'products.update',
         'destroy' => 'products.destroy'
+    ]);
+});
+
+//ROUTES FOR PURCHASES
+Route::middleware('auth')->group(function () {
+    Route::get('/purchases/getPurchases', [PurchaseController::class, 'getPurchases'])->name('purchases.json');
+    Route::resource('/purchases', PurchaseController::class)->names([
+        'index' => 'purchases.index',
+        'create' => 'purchases.create',
+        'store' => 'purchases.store',
+        'show' => 'purchases.show',
+        'edit' => 'purchases.edit',
+        'update' => 'purchases.update',
+        'destroy' => 'purchases.destroy'
     ]);
 });
 

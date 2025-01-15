@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -17,7 +18,7 @@ class ProductController extends Controller
 
     public function getProducts()
     {
-        $products = Product::all(); // Recupera todos los productos
+        $products = Product::with('category')->get(); // Recupera todos los productos
         return response()->json($products); // Retorna los datos en formato JSON
     }
 
@@ -35,34 +36,48 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        // Validación de datos
+        // Validar los datos enviados por el formulario
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'sell_price' => 'required|numeric',
             'category_id' => 'required|integer|exists:categories,id',
             'provider_id' => 'required|integer|exists:providers,id',
-            'image' => 'nullable|image|max:2048',
+            'image' => 'nullable|file|mimes:jpeg,png,jpg,gif,webp,avif|max:2048', // Extensiones válidas
         ]);
 
-        // Obtener el último código y generar el siguiente
+        // Generar el próximo código de barras
         $lastProduct = Product::orderBy('id', 'desc')->first();
-        $nextCode = $lastProduct && $lastProduct->code ? str_pad((int) $lastProduct->code + 1, 8, '0', STR_PAD_LEFT) : '00000001';
+        $nextCode = $lastProduct && $lastProduct->code
+            ? str_pad((int) $lastProduct->code + 1, 8, '0', STR_PAD_LEFT)
+            : '00000001';
 
-        // Crear el producto
+        // Manejar la carga de la imagen
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = now()->format('d_m_Y_His') . '_' . $image->getClientOriginalName(); // Evitar conflictos de nombres
+
+            // Ruta directa en `public`
+            $destinationPath = public_path('assets/image/products');
+            $image->move($destinationPath, $imageName); // Mover el archivo a la carpeta
+
+            $imagePath = 'assets/image/products/' . $imageName; // Ruta para guardar en la BD
+        }
+
+        // Crear el producto en la base de datos
         $product = Product::create([
             'name' => $validatedData['name'],
-            'code' => $nextCode, // Generar código automáticamente
+            'code' => $nextCode, // Asignar el código generado automáticamente
             'sell_price' => $validatedData['sell_price'],
             'category_id' => $validatedData['category_id'],
             'provider_id' => $validatedData['provider_id'],
-            'stock' => 0, // Inicializa el stock en 0
-            'image' => $request->file('image') ? $request->file('image')->store('assets/image/products', 'public') : null,
+            'stock' => 0, // El stock se inicializa en 0
+            'image' => $imagePath, // Ruta de la imagen si existe
         ]);
 
-        // Respuesta JSON
+        // Devolver una respuesta JSON con el producto creado
         return response()->json(['message' => 'Producto registrado exitosamente', 'product' => $product], 201);
     }
-
 
 
     public function getNextBarcode()
@@ -80,16 +95,23 @@ class ProductController extends Controller
 
 
 
-
-
-
     /**
      * Display the specified resource.
      */
-    public function show(Product $product)
+    public function show($id)
     {
-        //
+        // Busca el producto por ID
+        $product = Product::find($id);
+
+        // Si el producto no se encuentra, devuelve un error 404
+        if (!$product) {
+            return response()->json(['error' => 'Producto no encontrado'], 404);
+        }
+
+        // Retorna el producto encontrado en formato JSON
+        return response()->json($product);
     }
+
 
     /**
      * Show the form for editing the specified resource.
@@ -102,16 +124,79 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Product $product)
+    public function update(Request $request, $id)
     {
-        //
+        // Validar los datos enviados
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'sell_price' => 'required|numeric',
+            'category_id' => 'required|integer|exists:categories,id',
+            'provider_id' => 'required|integer|exists:providers,id',
+            'code' => 'required|string|max:255|unique:products,code,' . $id, // Código único excepto para este producto
+            'image' => 'nullable|file|mimes:jpeg,png,jpg,gif,webp,avif|max:2048', // Validar tipos de imagen
+        ]);
+
+        // Encontrar el producto existente
+        $product = Product::find($id);
+
+        if (!$product) {
+            return response()->json(['error' => 'Producto no encontrado'], 404);
+        }
+
+        // Manejar la carga de la imagen
+        $imagePath = $product->image; // Mantener la ruta existente si no se actualiza
+        if ($request->hasFile('image')) {
+            // Eliminar la imagen anterior si existe
+            if ($imagePath && \File::exists(public_path($imagePath))) {
+                \File::delete(public_path($imagePath));
+            }
+
+            // Procesar la nueva imagen
+            $image = $request->file('image');
+            $imageName = now()->format('d_m_Y_His') . '_' . $image->getClientOriginalName(); // Evitar conflictos de nombres
+
+            // Guardar la nueva imagen en la carpeta deseada
+            $destinationPath = public_path('assets/image/products');
+            $image->move($destinationPath, $imageName);
+
+            // Actualizar la ruta de la nueva imagen
+            $imagePath = 'assets/image/products/' . $imageName;
+        }
+
+        // Actualizar los valores del producto
+        $product->update([
+            'name' => $validatedData['name'],
+            'code' => $validatedData['code'],
+            'sell_price' => $validatedData['sell_price'],
+            'category_id' => $validatedData['category_id'],
+            'provider_id' => $validatedData['provider_id'],
+            'image' => $imagePath,
+        ]);
+
+        // Devolver una respuesta JSON con el producto actualizado
+        return response()->json(['message' => 'Producto actualizado exitosamente', 'product' => $product], 200);
     }
+
+
+
+
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Product $product)
+    public function destroy($id)
     {
-        //
+        $product = Product::find($id);
+        if (!$product) {
+            return response()->json(['error' => 'Producto no encontrado'], 404);
+        }
+
+        // Elimina la imagen si existe
+        if ($product->image) {
+            \Storage::disk('public')->delete($product->image);
+        }
+
+        $product->delete();
+        return response()->json(['message' => 'Producto eliminado exitosamente']);
     }
 }

@@ -18,25 +18,25 @@
                             <div class="col-lg-6 col-5 my-auto text-end">
                                 <div class="dropdown float-lg-end pe-4">
                                     <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                        data-bs-target="#modalNuevoProducto">
+                                        data-bs-target="#modalNuevoProduct">
                                         + Nuevo Producto
                                     </button>
                                 </div>
                             </div>
 
                             <!-- Modal -->
-                            <div class="modal fade" id="modalNuevoProducto" tabindex="-1"
-                                aria-labelledby="modalNuevoProductoLabel" aria-hidden="true">
+                            <div class="modal fade" id="modalNuevoProduct" tabindex="-1"
+                                aria-labelledby="modalNuevoProductLabel" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="modalNuevoProductoLabel">Registro de Cliente
+                                            <h5 class="modal-title" id="modalNuevoProductLabel">Registro de Cliente
                                             </h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                 aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                            <form id="formNuevoCliente">
+                                            <form id="formNuevoProduct">
                                                 <div class="mb-3">
                                                     <label for="name" class="form-label">Nombre</label>
                                                     <input type="text" class="form-control" id="name" name="name"
@@ -109,6 +109,10 @@
                                         <th
                                             class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                             Categoria
+                                        </th>
+                                        <th
+                                            class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                            Imagen
                                         </th>
                                         <th
                                             class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">

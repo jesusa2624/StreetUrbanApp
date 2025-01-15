@@ -21,14 +21,20 @@ window.cargarProducts = async function () {
         tbody.innerHTML = '';
 
         // Itera sobre los productos y genera las filas
-        products.forEach((product) => {
+        products.forEach((product, index) => {
             const row = document.createElement('tr');
+            // console.log(pproduct.category ? product.category.name : '-');
+            
             row.innerHTML = `
-                <td class="align-middle text-center text-sm">${product.id}</td>
+                <td class="align-middle text-center text-sm">${index + 1}</td>
                 <td class="align-middle text-center text-sm">${product.name || '-'}</td>
                 <td class="align-middle text-center text-sm">${product.stock || '-'}</td>
                 <td class="align-middle text-center text-sm">${product.status || '-'}</td>
-                <td class="align-middle text-center text-sm">${product.category_id || '-'}</td>
+                <td class="align-middle text-center text-sm">${product.category.name || '-'}</td
+                
+                <td class="align-middle text-center text-sm">
+                    <img src="${product.image}" alt="${product.name}" class="img-thumbnail" style="max-width: 100px; max-height: 100px;">
+                </td>
 
                 <td class="align-middle text-center text-sm">
                     <button type="button" class="btn btn-secondary" onclick="abrirModalEditar(${product.id})">Editar</button>
