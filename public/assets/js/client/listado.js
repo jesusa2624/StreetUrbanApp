@@ -24,12 +24,12 @@ window.cargarClientes = async function () {
         clients.forEach((client) => {
             const row = document.createElement('tr');
             row.innerHTML = `
-                <td class="align-middle text-center text-sm">${client.id}</td>
-                <td class="align-middle text-center text-sm">${client.name || '-'}</td>
-                <td class="align-middle text-center text-sm">${client.dni || '-'}</td>
-                <td class="align-middle text-center text-sm">${client.phone || '-'}</td>
-                <td class="align-middle text-center text-sm">${client.email || '-'}</td>
-                <td class="align-middle text-center text-sm">
+                <td class="text-center text-xxs font-weight-bolder">${client.id}</td>
+                <td class="text-center text-xxs font-weight-bolder">${client.name || '-'}</td>
+                <td class="text-center text-xxs font-weight-bolder">${client.dni || '-'}</td>
+                <td class="text-center text-xxs font-weight-bolder">${client.phone || '-'}</td>
+                <td class="text-center text-xxs font-weight-bolder">${client.email || '-'}</td>
+                <td class="text-center text-xxs font-weight-bolder">
                     <button type="button" class="btn btn-secondary" onclick="abrirModalEditar(${client.id})">Editar</button>
                     <button type="button" class="btn btn-danger" onclick="borrarCliente(${client.id})">Borrar</button>
                 </td>

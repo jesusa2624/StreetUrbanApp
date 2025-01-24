@@ -73,41 +73,15 @@ function buscarPorDNI() {
             document.getElementById('name').value = `${data.nombres} ${data.apellidoPaterno} ${data.apellidoMaterno}`;
             document.getElementById('address').value = data.direccion || 'Dirección no registrada';
 
-            Swal.fire({
-                title: 'Información encontrada',
-                icon: 'success',
-                toast: true,
-                position: 'top-end', // Puedes cambiar a 'center', 'top', 'bottom', etc.
-                showConfirmButton: false,
-                timer: 4000, // La alerta desaparecerá en 4 segundos
-                timerProgressBar: true,
-                customClass: {
-                    popup: 'swal-success-border' // Aplica una clase CSS personalizada
-                }
-            });
-
-
+            Swal.fire('Éxito', 'Datos del cliente encontrados y completados.', 'success');
         })
         .catch(error => {
             if (error.response) {
                 console.error('Detalles del error:', error.response.data);
-                Swal.fire({
-                    title: 'Error',
-                    text: `Error al consultar el DNI: ${error.response.data.error || 'Desconocido'}`,
-                    icon: 'error',
-                    toast: true,  // Hace que sea un toast
-                    position: 'top-end', // Posición en la pantalla
-                    showConfirmButton: false, // No muestra botón de confirmación
-                    timer: 4000, // La alerta desaparecerá en 4 segundos
-                    timerProgressBar: true, // Muestra una barra de progreso
-                    customClass: {
-                        popup: 'swal-error-border' // Puedes aplicar una clase CSS personalizada
-                    }
-                });
                 Swal.fire('Error', `Error al consultar el DNI: ${error.response.data.error || 'Desconocido'}`, 'error');
             } else {
-           console.error('Error al consultar el DNI:', error);
-                Swal.fire('Error', 'No se pudo obtener la información del cliente.', 'error');     
+                console.error('Error al consultar el DNI:', error);
+                Swal.fire('Error', 'No se pudo obtener la información del cliente.', 'error');
             }
         });
 }

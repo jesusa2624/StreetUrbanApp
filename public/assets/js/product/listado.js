@@ -26,13 +26,13 @@ window.cargarProducts = async function () {
             // console.log(pproduct.category ? product.category.name : '-');
             
             row.innerHTML = `
-                <td class="align-middle text-center text-sm">${index + 1}</td>
-                <td class="align-middle text-center text-sm">${product.name || '-'}</td>
-                <td class="align-middle text-center text-sm">${product.stock || '-'}</td>
-                <td class="align-middle text-center text-sm">${product.status || '-'}</td>
-                <td class="align-middle text-center text-sm">${product.category.name || '-'}</td
+                <td class="text-center text-xxs font-weight-bolder">${index + 1}</td>
+                <td class="text-center text-xxs font-weight-bolder">${product.name || '-'}</td>
+                <td class="text-center text-xxs font-weight-bolder">${product.stock || '-'}</td>
+                <td class="text-center text-xxs font-weight-bolder">${product.status || '-'}</td>
+                <td class="text-center text-xxs font-weight-bolder">${product.category.name || '-'}</td
                 
-                <td class="align-middle text-center text-sm">
+                <td class="text-center text-xxs font-weight-bolder">
                     <img src="${product.image}" alt="${product.name}" class="img-thumbnail" style="max-width: 100px; max-height: 100px;">
                 </td>
 

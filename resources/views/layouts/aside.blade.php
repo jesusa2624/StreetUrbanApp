@@ -39,7 +39,8 @@
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link " href="#">
+            <a class="nav-link {{ request()->is('sales*') ? 'bg-gradient-primary active' : '' }}"
+                href="{{ route('sales.index') }}">
                 <div
                     class="icon icon-shape icon-sm shadow border-radius-md bg-dark text-center me-2 d-flex align-items-center justify-content-center">
                     <i class="fa-regular fa-money-bill-1" style="font-size: 20px;"></i>

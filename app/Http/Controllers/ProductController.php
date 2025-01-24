@@ -22,6 +22,26 @@ class ProductController extends Controller
         return response()->json($products); // Retorna los datos en formato JSON
     }
 
+    public function getProductDetails($id)
+    {
+        // Buscar el producto por su ID
+        $product = Product::find($id);
+
+        // Si no se encuentra, devolver un error 404
+        if (!$product) {
+            return response()->json(['message' => 'Producto no encontrado'], 404);
+        }
+
+        // Devolver los detalles del producto
+        return response()->json([
+            'id' => $product->id,
+            'name' => $product->name,
+            'code' => $product->code,
+            'stock' => $product->stock,
+            'sell_price' => $product->sell_price,
+        ]);
+    }
+
 
     /**
      * Show the form for creating a new resource.

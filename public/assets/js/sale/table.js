@@ -8,26 +8,27 @@ export function initializeTable() {
 
 // Renderizar la tabla
 export function renderTable() {
-    const tbody = document.querySelector('tbody');
-    tbody.innerHTML = ''; // Limpia la tabla
+    const tbody = document.querySelector('#formNuevoSale tbody');
+    tbody.innerHTML = '';
 
     products.forEach((product, index) => {
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td>
+            <td class="text-center">
                 <button class="btn btn-danger btn-sm" type="button">Eliminar</button>
             </td>
             <td class="align-middle text-center text-sm">${product.name}</td>
             <td class="align-middle text-center text-sm">PEN ${product.price.toFixed(2)}</td>
+            <td class="align-middle text-center text-sm">${product.discount}%</td>
             <td class="align-middle text-center text-sm">${product.quantity}</td>
             <td class="align-middle text-center text-sm">PEN ${product.subtotal.toFixed(2)}</td>
         `;
         tbody.appendChild(row);
 
-        // Agrega el evento click al botón "Eliminar"
+        // Configurar el botón "Eliminar"
         const deleteButton = row.querySelector('button');
         deleteButton.addEventListener('click', () => {
-            removeProduct(index); // Llama a la función para eliminar el producto
+            removeProduct(index);
         });
     });
 }
@@ -46,8 +47,7 @@ export function calculateTotals() {
 
 // Eliminar producto
 export function removeProduct(index) {
-    products.splice(index, 1); // Elimina el producto de la lista
+    products.splice(index, 1); // Elimina el producto del array
     renderTable(); // Vuelve a renderizar la tabla
     calculateTotals(); // Recalcula los totales
 }
-

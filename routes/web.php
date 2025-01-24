@@ -6,6 +6,8 @@ use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\PurchaseController;
+use App\Http\Controllers\SaleController;
+
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -82,6 +84,8 @@ Route::middleware('auth')->group(function () {
 //ROUTES FOR PURCHASES
 Route::middleware('auth')->group(function () {
     Route::get('/purchases/getPurchases', [PurchaseController::class, 'getPurchases'])->name('purchases.json');
+    Route::get('/purchases/{id}/details', [PurchaseController::class, 'getPurchaseDetails'])->name('purchases.details');
+    Route::post('/purchases/change-status/{id}', [PurchaseController::class, 'changeStatus'])->name('purchases.change-status');
     Route::resource('/purchases', PurchaseController::class)->names([
         'index' => 'purchases.index',
         'create' => 'purchases.create',
@@ -90,6 +94,24 @@ Route::middleware('auth')->group(function () {
         'edit' => 'purchases.edit',
         'update' => 'purchases.update',
         'destroy' => 'purchases.destroy'
+    ]);
+});
+
+//ROUTES FOR SALES
+Route::middleware('auth')->group(function () {
+    Route::get('/sales/getSales', [App\Http\Controllers\SaleController::class, 'getSales'])->name('sales.json');
+    Route::get('/products/{id}/details', [ProductController::class, 'getProductDetails'])->name('products.details');
+
+    Route::get('/sales/{id}/details', [App\Http\Controllers\SaleController::class, 'getSaleDetails'])->name('sales.details');
+    Route::post('/sales/change-status/{id}', [App\Http\Controllers\SaleController::class, 'changeStatus'])->name('sales.change-status');
+    Route::resource('/sales', App\Http\Controllers\SaleController::class)->names([
+        'index' => 'sales.index',
+        'create' => 'sales.create',
+        'store' => 'sales.store',
+        'show' => 'sales.show',
+        'edit' => 'sales.edit',
+        'update' => 'sales.update',
+        'destroy' => 'sales.destroy'
     ]);
 });
 

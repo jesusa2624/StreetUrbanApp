@@ -38,37 +38,42 @@
                                         <div class="modal-body">
                                             <form id="formNuevoCliente">
                                                 <div class="mb-3">
-                                                    <label for="name" class="form-label">Nombre</label>
-                                                    <input type="text" class="form-control" id="name"
-                                                        name="name" placeholder="Nombre del cliente" required>
+                                                    <label for="dni" class="form-label">DNI</label>
+                                                    <div class="input-group">
+                                                        <input type="number" class="form-control" id="dni"
+                                                            name="dni" placeholder="DNI del cliente" required>
+                                                        <button type="button" class="btn btn-info"
+                                                            id="searchDni">Buscar</button>
+                                                    </div>
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label for="dni" class="form-label">DNI</label>
-                                                    <input type="number" class="form-control" id="dni"
-                                                        name="dni" placeholder="DNI del cliente" required>
+                                                    <label for="name" class="form-label">Nombre</label>
+                                                    <input type="text" class="form-control" id="name" name="name"
+                                                        placeholder="Nombre del cliente" required>
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="ruc" class="form-label">RUC</label>
-                                                    <input type="number" class="form-control" id="ruc"
-                                                        name="ruc" placeholder="RUC del cliente" required>
+                                                    <input type="number" class="form-control" id="ruc" name="ruc"
+                                                        placeholder="RUC del cliente" required>
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="phone" class="form-label">Celular</label>
-                                                    <input type="number" class="form-control" id="phone"
-                                                        name="phone" placeholder="Numero del cliente" required>
+                                                    <input type="number" class="form-control" id="phone" name="phone"
+                                                        placeholder="Número del cliente" required>
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="address" class="form-label">Dirección</label>
-                                                    <input type="text" class="form-control" id="address"
-                                                        name="address" placeholder="Direccion del cliente" required>
+                                                    <input type="text" class="form-control" id="address" name="address"
+                                                        placeholder="Dirección del cliente" required>
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label for="email" class="form-label">Correo electronico</label>
-                                                    <input type="email" class="form-control" id="email"
-                                                        name="email" placeholder="example@gmail.com" required>
+                                                    <label for="email" class="form-label">Correo electrónico</label>
+                                                    <input type="email" class="form-control" id="email" name="email"
+                                                        placeholder="example@gmail.com" required>
                                                 </div>
                                                 <input type="hidden" id="idCliente">
                                             </form>
+
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary"
@@ -133,7 +138,7 @@
     <script>
         const clientsJsonUrl = "{{ route('clients.json') }}";
     </script>
-    
+
 
     <script src="{{ asset('assets/js/client/listado.js') }}"></script>
     <script src="{{ asset('assets/js/client/registro.js') }}"></script>

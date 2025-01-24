@@ -15,13 +15,12 @@ window.cargarProviders = async function () {
         providers.forEach((provider) => {
             const row = document.createElement('tr');
             row.innerHTML = `
-                <td class="align-middle text-center text-sm">${provider.id}</td>
-                <td class="align-middle text-center text-sm">${provider.name || '-'}</td>
-                <td class="align-middle text-center text-sm">${provider.email || '-'}</td>
-                <td class="align-middle text-center text-sm">${provider.ruc || '-'}</td>
-                <td class="align-middle text-center text-sm">${provider.address || '-'}</td>
-                <td class="align-middle text-center text-sm">${provider.phone || '-'}</td>
-                <td class="align-middle text-center text-sm">
+                <td class="text-center text-xxs font-weight-bolder">${provider.id}</td>
+                <td class="text-center text-xxs font-weight-bolder">${provider.name || '-'}</td>
+                <td class="text-center text-xxs font-weight-bolder">${provider.email || '-'}</td>
+                <td class="text-center text-xxs font-weight-bolder">${provider.phone || '-'}</td>
+                <td class="text-center text-xxs font-weight-bolder">${provider.address || '-'}</td>
+                <td class="text-center text-xxs font-weight-bolder">
                     <button type="button" class="btn btn-secondary" onclick="abrirModalEditar(${provider.id})">Editar</button>
                     <button type="button" class="btn btn-danger" onclick="borrarProvider(${provider.id})">Borrar</button>
                 </td>

@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const categories = await response.json();
 
             // Limpia el select antes de llenarlo
-            categorySelect.innerHTML = '<option value="">Seleccione una categoría</option>';
+            categorySelect.innerHTML = '<option value="" disabled selected>Seleccione la Categoria...</option>';
 
             // Recorre los datos y añade las opciones al select
             categories.forEach(category => {
@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const providers = await response.json();
 
             // Limpia el select antes de llenarlo
-            providerSelect.innerHTML = '<option value="">Seleccione un proveedor</option>';
+            providerSelect.innerHTML = '<option value="" disabled selected>Seleccione el Proveedor...</option>';
 
             // Recorre los datos y añade las opciones al select
             providers.forEach(provider => {

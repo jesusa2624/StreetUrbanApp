@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
-@section('title', '- Compras')
+@section('title', '- Ventas')
 
-@section('pages', 'Compras')
+@section('pages', 'Ventas')
 
 @section('content')
 
@@ -13,35 +13,35 @@
                     <div class="card-header pb-0">
                         <div class="row">
                             <div class="col-lg-6 col-7">
-                                <h6>Compras</h6>
+                                <h6>Ventas</h6>
                             </div>
                             <div class="col-lg-6 col-5 my-auto text-end">
                                 <div class="dropdown float-lg-end pe-4">
                                     <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                        data-bs-target="#modalNuevoPurchase">
+                                        data-bs-target="#modalNuevoSale">
                                         + Nueva Compra
                                     </button>
                                 </div>
                             </div>
 
                             <!-- Modal -->
-                            <div class="modal fade" id="modalNuevoPurchase" tabindex="-1"
-                                aria-labelledby="modalNuevoPurchaseLabel" aria-hidden="true">
+                            <div class="modal fade" id="modalNuevoSale" tabindex="-1"
+                                aria-labelledby="modalNuevoSaleLabel" aria-hidden="true">
                                 <div class="modal-dialog modal-xl">
                                     <div class="modal-content" style="background-color: #f7f7f7;">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="modalNuevoPurchaseLabel">Registro de Compra
+                                            <h5 class="modal-title" id="modalNuevoSaleLabel">Registro de Venta
                                             </h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                 aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                            <form id="formNuevoPurchase">
+                                            <form id="formNuevoSale">
                                                 <div class="row">
                                                     <div class="mb-3 col-6">
-                                                        <label for="provider_id" class="form-label">Proveedor</label>
-                                                        <select class="form-select" name="provider_id" id="provider_id">
-                                                            <option value="">Cargando proveedor...</option>
+                                                        <label for="client_id" class="form-label">Cliente</label>
+                                                        <select class="form-select" name="client_id" id="client_id">
+                                                            <option value="">Cargando cliente...</option>
                                                         </select>
                                                     </div>
                                                     <div class="mb-3 col-6">
@@ -50,7 +50,12 @@
                                                             <option value="">Cargando producto...</option>
                                                         </select>
                                                     </div>
-                                                    <div class="mb-3 col-6">
+                                                    <div class="mb-3 col-3">
+                                                        <label for="code" class="form-label">Codigo de barras</label>
+                                                        <input type="number" class="form-control" id="code"
+                                                            name="code" placeholder="" required>
+                                                    </div>
+                                                    <div class="mb-3 col-3">
                                                         <label for="tax" class="form-label">Impuesto</label>
                                                         <div class="input-group">
                                                             <div class="input-group-prepend"><span class="input-group-text"
@@ -61,13 +66,18 @@
                                                                 aria-describedby="basic-addon3">
                                                         </div>
                                                     </div>
-                                                    <div class="mb-3 col-6">
+                                                    <div class="mb-3 col-3">
+                                                        <label for="stock" class="form-label">Stock actual</label>
+                                                        <input type="number" class="form-control" id="stock"
+                                                            name="stock" placeholder="" required>
+                                                    </div>
+                                                    <div class="mb-3 col-3">
                                                         <label for="quantity" class="form-label">Cantidad</label>
                                                         <input type="number" class="form-control" id="quantity"
                                                             name="quantity" placeholder="" required>
                                                     </div>
-                                                    <div class="mb-3 col-6">
-                                                        <label for="price" class="form-label">Precio de compra</label>
+                                                    <div class="mb-3 col-3">
+                                                        <label for="price" class="form-label">Precio de venta</label>
                                                         <div class="input-group">
                                                             <div class="input-group-prepend"><span class="input-group-text"
                                                                     id="basic-addon3">S/.</span>
@@ -76,8 +86,19 @@
                                                                 id="price" aria-describedby="basic-addon3">
                                                         </div>
                                                     </div>
+                                                    <div class="mb-3 col-3">
+                                                        <label for="discount" class="form-label">Porcentaje de descuento</label>
+                                                        <div class="input-group">
+                                                            <div class="input-group-prepend"><span class="input-group-text"
+                                                                    id="basic-addon3">%</span>
+                                                            </div>
+                                                            <input type="number" class="form-control" name="discount"
+                                                                id="discount" value="0"
+                                                                aria-describedby="basic-addon3">
+                                                        </div>
+                                                    </div>
 
-                                                    <input type="hidden" id="idPurchase">
+                                                    <input type="hidden" id="idSale">
 
                                                     <div class="text-center">
                                                         <button type="button" class="btn btn-warning w-50"
@@ -104,7 +125,10 @@
                                                                                                     Producto</th>
                                                                                                 <th
                                                                                                     class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                                                                    Precio(PEN)</th>
+                                                                                                    Precio (PEN)</th>
+                                                                                                <th
+                                                                                                    class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                                                                    Descuento</th>
                                                                                                 <th
                                                                                                     class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                                                                                     Cantidad</th>
@@ -118,11 +142,11 @@
                                                                                         </tbody>
                                                                                         <tfoot>
                                                                                             <tr>
-                                                                                                <th colspan="5">
+                                                                                                <th colspan="6">
                                                                                                 </th>
                                                                                             </tr>
                                                                                             <tr>
-                                                                                                <th colspan="5">
+                                                                                                <th colspan="6">
                                                                                                     <p class=" text-xxs font-weight-bolder"
                                                                                                         align="right">
                                                                                                         TOTAL: <span
@@ -132,7 +156,7 @@
 
                                                                                             </tr>
                                                                                             <tr>
-                                                                                                <th colspan="5">
+                                                                                                <th colspan="6">
                                                                                                     <p class=" text-xxs font-weight-bolder"
                                                                                                         align="right">
                                                                                                         TOTAL IMPUESTO
@@ -143,7 +167,7 @@
 
                                                                                             </tr>
                                                                                             <tr>
-                                                                                                <th colspan="5">
+                                                                                                <th colspan="6">
                                                                                                     <p class=" text-xxs font-weight-bolder"
                                                                                                         align="right">
                                                                                                         TOTAL PAGAR: <span
@@ -170,8 +194,8 @@
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary"
                                                 data-bs-dismiss="modal">Cancelar</button>
-                                            <button type="button" class="btn btn-primary"
-                                                id="savePurchase">Guardar</button>
+                                                <button type="button" class="btn btn-primary" id="saveSale">Guardar</button>
+
                                         </div>
                                     </div>
                                 </div>
@@ -226,24 +250,25 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
-        const purchasesJsonUrl = "{{ route('purchases.json') }}";
+        const salesJsonUrl = "{{ route('sales.json') }}";
     </script>
 
 
     <!-- Archivos de Módulo -->
-    <script type="module" src="{{ asset('assets/js/purchase/table.js') }}"></script>
-    <script type="module" src="{{ asset('assets/js/purchase/save.js') }}"></script>
-    <script type="module" src="{{ asset('assets/js/purchase/products.js') }}"></script>
-    <script type="module" src="{{ asset('assets/js/purchase/main.js') }}"></script>
-    <script type="module" src="{{ asset('assets/js/purchase/listado.js') }}"></script>
-    <script type="module" src="{{ asset('assets/js/purchase/verCompra.js') }}"></script>
-    <script type="module" src="{{ asset('assets/js/purchase/status.js') }}"></script>
+    <script type="module" src="{{ asset('assets/js/sale/table.js') }}"></script>
+    <script type="module" src="{{ asset('assets/js/sale/save.js') }}"></script>
+    <script type="module" src="{{ asset('assets/js/sale/products.js') }}"></script>
+    <script type="module" src="{{ asset('assets/js/sale/main.js') }}"></script>
+    <script type="module" src="{{ asset('assets/js/sale/listado.js') }}"></script>
+    <script type="module" src="{{ asset('assets/js/sale/verVenta.js') }}"></script>
+    <script type="module" src="{{ asset('assets/js/sale/status.js') }}"></script>
 
 
     {{-- <script type="module" src="{{ asset('assets/js/purchase/eliminar.js') }}"></script> --}}
 
 
 
+    
     <!-- Archivos No Módulo -->
-    <script src="{{ asset('assets/js/purchase/select.js') }}"></script>
+    <script src="{{ asset('assets/js/sale/select.js') }}"></script>
 @endpush

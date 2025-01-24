@@ -36,6 +36,84 @@ class PurchaseController extends Controller
         return response()->json($products);
     }
 
+    public function getPurchases()
+    {
+        $purchases = Purchase::with(['provider', 'details.product']) // Relación con detalles y producto
+            ->get()
+            ->map(function ($purchase) {
+                return [
+                    'id' => $purchase->id,
+                    'provider_name' => $purchase->provider->name,
+                    'status' => $purchase->status,
+                    'total' => $purchase->total,
+                    'products' => $purchase->details->map(function ($detail) {
+                        return [
+                            'product_name' => $detail->product->name,
+                            'quantity' => $detail->quantity,
+                            'price' => $detail->price,
+                            'subtotal' => $detail->quantity * $detail->price,
+                        ];
+                    }),
+                ];
+            });
+
+        return response()->json($purchases);
+    }
+
+    public function getPurchaseDetails($id)
+    {
+        $purchase = Purchase::with(['provider', 'details.product']) // Relaciones necesarias
+            ->find($id);
+
+        if (!$purchase) {
+            return response()->json(['error' => 'Compra no encontrada'], 404);
+        }
+
+        return response()->json([
+            'id' => $purchase->id,
+            'provider_name' => $purchase->provider->name,
+            'status' => $purchase->status,
+            'total' => $purchase->total,
+            'tax' => $purchase->tax,
+            'products' => $purchase->details->map(function ($detail) {
+                return [
+                    'product_name' => $detail->product->name,
+                    'quantity' => $detail->quantity,
+                    'price' => $detail->price,
+                    'subtotal' => $detail->quantity * $detail->price,
+                ];
+            }),
+        ]);
+    }
+
+
+    public function changeStatus($id)
+    {
+        try {
+            $purchase = Purchase::find($id);
+
+            if (!$purchase) {
+                return response()->json(['message' => 'Compra no encontrada.'], 404);
+            }
+
+            // Cambiar el estado
+            $newStatus = $purchase->status === 'VALID' ? 'CANCELED' : 'VALID';
+            $purchase->update(['status' => $newStatus]);
+
+            return response()->json(['message' => 'Estado cambiado con éxito.', 'status' => $newStatus]);
+        } catch (\Exception $e) {
+            Log::error('Error al cambiar el estado de la compra:', ['error' => $e->getMessage()]);
+            return response()->json(['message' => 'Error interno del servidor'], 500);
+        }
+    }
+
+
+
+
+
+
+
+
 
 
     /**
@@ -103,7 +181,6 @@ class PurchaseController extends Controller
             Log::error('Error al registrar la compra:', ['error' => $e->getMessage()]);
 
             return response()->json(['message' => 'Error al registrar la compra', 'error' => $e->getMessage()], 500);
-
         }
     }
 
@@ -151,22 +228,39 @@ class PurchaseController extends Controller
      */
     public function destroy($id)
     {
-        $purchase = Purchase::find($id);
+        try {
+            Log::info("Intentando eliminar la compra con ID: $id");
 
-        if (!$purchase) {
-            return response()->json(['error' => 'Compra no encontrada'], 404);
-        }
+            $purchase = Purchase::find($id);
 
-        // Revertir el stock de los productos asociados
-        foreach ($purchase->details as $detail) {
-            $product = Product::find($detail->product_id);
-            if ($product) {
-                $product->decrement('stock', $detail->quantity);
+            if (!$purchase) {
+                Log::error("Compra no encontrada con ID: $id");
+                return response()->json(['error' => 'Compra no encontrada'], 404);
             }
+
+            Log::info("Compra encontrada:", $purchase->toArray());
+
+            // Iterar sobre los detalles de la compra
+            foreach ($purchase->details as $detail) {
+                Log::info("Procesando detalle de compra:", $detail->toArray());
+
+                $product = Product::find($detail->product_id);
+                if ($product) {
+                    Log::info("Revirtiendo stock del producto ID: {$product->id}, cantidad: {$detail->quantity}");
+                    $product->decrement('stock', $detail->quantity);
+                } else {
+                    Log::warning("Producto no encontrado con ID: {$detail->product_id}");
+                }
+            }
+
+            // Eliminar la compra
+            $purchase->delete();
+            Log::info("Compra eliminada con éxito.");
+
+            return response()->json(['message' => 'Compra eliminada con éxito'], 200);
+        } catch (\Exception $e) {
+            Log::error('Error al eliminar la compra:', ['error' => $e->getMessage()]);
+            return response()->json(['error' => 'Error interno del servidor'], 500);
         }
-
-        $purchase->delete();
-
-        return response()->json(['message' => 'Compra eliminada con éxito'], 200);
     }
 }

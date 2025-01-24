@@ -16,10 +16,10 @@ window.cargarCategorias = async function () {
         categories.forEach((category) => {
             tbody.innerHTML += `
                 <tr>
-                    <td class="align-middle text-center text-sm">${category.id}</td>
-                    <td class="align-middle text-center text-sm">${category.name}</td>
-                    <td class="align-middle text-center text-sm">${category.description}</td>
-                    <td class="align-middle text-center text-sm">
+                    <td class="text-center text-xxs font-weight-bolder">${category.id}</td>
+                    <td class="text-center text-xxs font-weight-bolder">${category.name}</td>
+                    <td class="text-center text-xxs font-weight-bolder">${category.description}</td>
+                    <td class="text-center text-xxs font-weight-bolder">
                         <button type="button" class="btn btn-secondary" onclick="abrirModalEditar(${category.id})">Editar</button>
                         <button type="button" class="btn btn-danger" onclick="borrarCategoria(${category.id})">Borrar</button>
                     </td>
