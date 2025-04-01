@@ -23,23 +23,26 @@ function abrirModalEditar(id) {
             return response.json();
         })
         .then(data => {
-            document.getElementById('idCliente').value = data.id;
-            document.getElementById('name').value = data.name;
-            document.getElementById('dni').value = data.dni;
-            document.getElementById('ruc').value = data.ruc;
-            document.getElementById('phone').value = data.phone;
-            document.getElementById('address').value = data.address;
-            document.getElementById('email').value = data.email;
+            // Llenar el formulario con los datos obtenidos
+            document.getElementById('idCliente').value = data.id || '';
+            document.getElementById('name').value = data.name || '';
+            document.getElementById('dni').value = data.dni || '';
+            document.getElementById('ruc').value = data.ruc || '';
+            document.getElementById('phone').value = data.phone || '';
+            document.getElementById('address').value = data.address || '';
+            document.getElementById('email').value = data.email || '';
+
+            // Mostrar el modal
             const modal = new bootstrap.Modal(document.getElementById('modalNuevoCliente'));
             modal.show();
         })
         .catch(error => {
             console.error('Error al obtener los datos del cliente:', error);
-            alert('Hubo un problema al cargar los datos del cliente.');
+            Swal.fire('Error', 'Hubo un problema al cargar los datos del cliente.', 'error');
         });
 }
 
-// Función para buscar datos por DNI
+// Función para buscar datos por DNI utilizando APIMIGO
 function buscarPorDNI() {
     const dniInput = document.getElementById('dni');
     const dni = dniInput.value.trim();
@@ -49,47 +52,46 @@ function buscarPorDNI() {
         return;
     }
 
-    // Codificar la URL para evitar errores con caracteres especiales
-    const url = `https://cors-anywhere.herokuapp.com/https://api.apis.net.pe/v2/reniec/dni?numero=${dni}`;
-    console.log('URL generada:', url);
+    const url = 'https://api.migo.pe/api/v1/dni';
+    const token = 'hy710thjjGzf1L6rj931eoDepuu5lnM9WcCUGn9CZUXCKuDAjv6tTKTVDhmH'; // Reemplázalo con tu token proporcionado por MIGO.
 
-    // Realizar la solicitud a la API
-    axios.get(url, {
+    fetch(url, {
+        method: 'POST',
         headers: {
-            Authorization: `Bearer apis-token-12793.ndN8GZi5D3ldyMaqDMSx8Gd9GtCjiaxz`,
-            'Content-Type': 'application/json',
-        }
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            token: token,
+            dni: dni
+        }),
     })
         .then(response => {
-            const data = response.data;
-
-            // Validar si los datos existen
-            if (!data || !data.nombres) {
-                Swal.fire('Error', 'No se encontraron datos para este DNI.', 'error');
-                return;
+            if (!response.ok) {
+                throw new Error(`Error HTTP: ${response.status}`);
             }
-
-            // Actualizar los campos del formulario
-            document.getElementById('name').value = `${data.nombres} ${data.apellidoPaterno} ${data.apellidoMaterno}`;
-            document.getElementById('address').value = data.direccion || 'Dirección no registrada';
-
-            Swal.fire('Éxito', 'Datos del cliente encontrados y completados.', 'success');
+            return response.json();
+        })
+        .then(data => {
+            if (data.success && data.nombre) {
+                document.getElementById('name').value = data.nombre || 'Nombre no disponible';
+                Swal.fire('Éxito', 'Datos encontrados correctamente.', 'success');
+            } else {
+                Swal.fire('Error', 'No se encontraron datos para este DNI.', 'error');
+            }
         })
         .catch(error => {
-            if (error.response) {
-                console.error('Detalles del error:', error.response.data);
-                Swal.fire('Error', `Error al consultar el DNI: ${error.response.data.error || 'Desconocido'}`, 'error');
-            } else {
-                console.error('Error al consultar el DNI:', error);
-                Swal.fire('Error', 'No se pudo obtener la información del cliente.', 'error');
-            }
+            console.error('Error al consultar el DNI:', error);
+            Swal.fire('Error', 'Hubo un problema al consultar los datos.', 'error');
         });
 }
 
-// Asociar la función al botón
 document.addEventListener('DOMContentLoaded', () => {
     const searchDniButton = document.getElementById('searchDni');
     if (searchDniButton) {
         searchDniButton.addEventListener('click', buscarPorDNI);
     }
 });
+
+
+

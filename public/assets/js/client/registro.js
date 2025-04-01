@@ -7,8 +7,10 @@ document.getElementById('submitForm').addEventListener('click', function () {
     const address = document.getElementById('address').value;
     const email = document.getElementById('email').value;
 
-    const url = isEditMode ? `/clients/${id}` : '/clients';
-    const method = isEditMode ? 'PUT' : 'POST';
+    const isEdit = id !== ''; // Si hay un ID, es edición
+
+    const url = isEdit ? `/clients/${id}` : '/clients';
+    const method = isEdit ? 'PUT' : 'POST';
 
     fetch(url, {
         method: method,
@@ -19,32 +21,86 @@ document.getElementById('submitForm').addEventListener('click', function () {
         body: JSON.stringify({ name, dni, ruc, phone, address, email }),
     })
         .then(response => {
-            if (response.ok) {
-                Swal.fire({
-                    title: isEditMode ? '¡Actualización exitosa!' : '¡Registro exitoso!',
-                    text: isEditMode
-                        ? 'El cliente fue actualizado correctamente.'
-                        : 'El cliente fue registrado correctamente.',
-                    icon: 'success',
-                    confirmButtonText: 'Aceptar',
-                }).then(() => {
-                    const modal = bootstrap.Modal.getInstance(document.getElementById('modalNuevoCliente'));
-                    modal.hide(); // Cierra el modal
-                    cargarClientes(); // Recarga la tabla
+            if (!response.ok) {
+                return response.json().then(err => {
+                    throw err;
                 });
-            } else {
-                throw new Error(isEditMode ? 'No se pudo actualizar el cliente' : 'No se pudo registrar el cliente');
             }
+            return response.json();
         })
+        .then(client => {
+            Swal.fire({
+                title: isEdit ? '¡Actualización exitosa!' : '¡Registro exitoso!',
+                text: isEdit
+                    ? 'El cliente fue actualizado correctamente.'
+                    : 'El cliente fue registrado correctamente.',
+                icon: 'success',
+                confirmButtonText: 'Aceptar',
+            }).then(() => {
+                const modal = bootstrap.Modal.getInstance(document.getElementById('modalNuevoCliente'));
+                modal.hide(); // Cierra el modal
+        
+                // Recargar la tabla para reflejar cambios
+                cargarClientes();
+            });
+        })        
         .catch(error => {
             console.error('Error:', error);
+            let errorMessage = 'Hubo un problema al procesar la solicitud.';
+
+            if (error.errors) {
+                if (error.errors.dni) {
+                    errorMessage = error.errors.dni[0];
+                } else if (error.errors.ruc) {
+                    errorMessage = error.errors.ruc[0];
+                }
+            }
+
             Swal.fire({
                 title: '¡Error!',
-                text: isEditMode
-                    ? 'Hubo un problema al actualizar el cliente.'
-                    : 'Hubo un problema al registrar el cliente.',
+                text: errorMessage,
                 icon: 'error',
-                confirmButtonText: 'Intentar de nuevo',
+                confirmButtonText: 'Aceptar',
             });
         });
 });
+
+// Función para actualizar la tabla sin recargar
+function actualizarTabla(client, isEdit) {
+    const tabla = document.getElementById('tablaClientes'); // Asegúrate de que tienes una tabla con este ID
+    if (!tabla) return;
+
+    if (isEdit) {
+        // Buscar y actualizar fila existente
+        const fila = document.querySelector(`#cliente-${client.id}`);
+        if (fila) {
+            fila.innerHTML = `
+                <td>${client.name}</td>
+                <td>${client.dni}</td>
+                <td>${client.ruc}</td>
+                <td>${client.phone}</td>
+                <td>${client.address}</td>
+                <td>${client.email}</td>
+                <td>
+                    <button class="btn btn-primary btn-sm" onclick="abrirModalEditar(${client.id})">Editar</button>
+                </td>
+            `;
+        }
+    } else {
+        // Agregar nueva fila
+        const nuevaFila = document.createElement('tr');
+        nuevaFila.id = `cliente-${client.id}`;
+        nuevaFila.innerHTML = `
+            <td>${client.name}</td>
+            <td>${client.dni}</td>
+            <td>${client.ruc}</td>
+            <td>${client.phone}</td>
+            <td>${client.address}</td>
+            <td>${client.email}</td>
+            <td>
+                <button class="btn btn-primary btn-sm" onclick="abrirModalEditar(${client.id})">Editar</button>
+            </td>
+        `;
+        tabla.appendChild(nuevaFila);
+    }
+}

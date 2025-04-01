@@ -35,29 +35,38 @@ class ClientController extends Controller
      */
     public function store(Request $request)
     {
-        // Validar los datos recibidos
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'dni' => 'required|string|max:8',
-            'ruc' => 'nullable|string|max:11',
-            'phone' => 'nullable|string|max:9',
-            'address' => 'nullable|string|max:255',
-            'email' => 'nullable|email|max:255',
-        ]);
+        try {
+            // Validar los datos recibidos
+            $validatedData = $request->validate([
+                'name' => 'required|string|max:255',
+                'dni' => 'required|string|max:8|unique:clients,dni',
+                'ruc' => 'nullable|string|max:11|unique:clients,ruc',
+                'phone' => 'nullable|string|max:9',
+                'address' => 'nullable|string|max:255',
+                'email' => 'nullable|email|max:255',
+            ], [
+                'dni.unique' => 'El DNI ingresado ya está registrado.',
+                'ruc.unique' => 'El RUC ingresado ya está registrado.',
+            ]);
 
-        // Crear un nuevo cliente
-        $client = new Client();
-        $client->name = $validatedData['name'];
-        $client->dni = $validatedData['dni'];
-        $client->ruc = $validatedData['ruc'];
-        $client->phone = $validatedData['phone'];
-        $client->address = $validatedData['address'];
-        $client->email = $validatedData['email'];
-        $client->save(); // Guardar en la base de datos
+            // Crear el nuevo cliente
+            $client = Client::create($validatedData);
 
-        // Retornar una respuesta
-        return response()->json(['message' => 'Cliente registrado exitosamente'], 201);
+            return response()->json($client, 201);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'errors' => $e->errors(),
+            ], 422); // Código 422 para errores de validación
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Ocurrió un error inesperado.',
+                'error' => $e->getMessage()
+            ], 500); // Código 500 para errores generales
+        }
     }
+
+
+
 
     /**
      * Display the specified resource.

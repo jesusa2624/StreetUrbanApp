@@ -19,7 +19,7 @@ export function renderTable() {
             </td>
             <td class="align-middle text-center text-sm">${product.name}</td>
             <td class="align-middle text-center text-sm">PEN ${product.price.toFixed(2)}</td>
-            <td class="align-middle text-center text-sm">${product.discount}%</td>
+            <td class="align-middle text-center text-sm">PEN ${product.discount.toFixed(2)}</td>
             <td class="align-middle text-center text-sm">${product.quantity}</td>
             <td class="align-middle text-center text-sm">PEN ${product.subtotal.toFixed(2)}</td>
         `;

@@ -6,6 +6,7 @@ use App\Models\Purchase;
 use App\Models\PurchaseDetails;
 use App\Models\Product;
 use App\Models\Provider;
+use App\Models\Size;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -36,9 +37,16 @@ class PurchaseController extends Controller
         return response()->json($products);
     }
 
+    public function getSizes()
+    {
+        $sizes = Size::all(); // Obtener todos los tamaños
+        return response()->json($sizes);
+    }
+
     public function getPurchases()
     {
         $purchases = Purchase::with(['provider', 'details.product']) // Relación con detalles y producto
+            ->orderBy('id', 'desc') // Ordenar por ID de forma descendente
             ->get()
             ->map(function ($purchase) {
                 return [
@@ -46,12 +54,14 @@ class PurchaseController extends Controller
                     'provider_name' => $purchase->provider->name,
                     'status' => $purchase->status,
                     'total' => $purchase->total,
+                    'purchase_date' => $purchase->purchase_date ? \Carbon\Carbon::parse($purchase->purchase_date)->format('d-m-Y') : 'Sin fecha',
                     'products' => $purchase->details->map(function ($detail) {
                         return [
                             'product_name' => $detail->product->name,
                             'quantity' => $detail->quantity,
                             'price' => $detail->price,
                             'subtotal' => $detail->quantity * $detail->price,
+                            'size' => $detail->size ? $detail->size->name : null,
                         ];
                     }),
                 ];
@@ -59,6 +69,7 @@ class PurchaseController extends Controller
 
         return response()->json($purchases);
     }
+
 
     public function getPurchaseDetails($id)
     {
@@ -81,36 +92,75 @@ class PurchaseController extends Controller
                     'quantity' => $detail->quantity,
                     'price' => $detail->price,
                     'subtotal' => $detail->quantity * $detail->price,
+                    'size' => $detail->size ? $detail->size->name : null,
+
                 ];
             }),
         ]);
     }
 
-
     public function changeStatus($id)
     {
         try {
-            $purchase = Purchase::find($id);
+            $purchase = Purchase::with('details.product')->find($id);
 
             if (!$purchase) {
                 return response()->json(['message' => 'Compra no encontrada.'], 404);
             }
 
-            // Cambiar el estado
             $newStatus = $purchase->status === 'VALID' ? 'CANCELED' : 'VALID';
             $purchase->update(['status' => $newStatus]);
 
+            foreach ($purchase->details as $detail) {
+                if (!$detail->product) {
+                    Log::warning("Producto no encontrado en detalle ID {$detail->id}");
+                    continue;
+                }
+
+                $product = $detail->product;
+                $product->stock = $newStatus === 'CANCELED'
+                    ? max(0, $product->stock - $detail->quantity)
+                    : $product->stock + $detail->quantity;
+
+                $product->save();
+            }
+
             return response()->json(['message' => 'Estado cambiado con éxito.', 'status' => $newStatus]);
         } catch (\Exception $e) {
-            Log::error('Error al cambiar el estado de la compra:', ['error' => $e->getMessage()]);
+            Log::error("Error al cambiar el estado: " . $e->getMessage());
             return response()->json(['message' => 'Error interno del servidor'], 500);
         }
     }
 
+    public function getCurrentMonthPurchases()
+    {
+        $currentMonth = now()->format('Y-m');
+
+        $purchases = Purchase::select(
+            DB::raw('SUM(total) as total_spent'),
+            DB::raw('COUNT(id) as total_purchases')
+        )
+            ->whereRaw('DATE_FORMAT(purchase_date, "%Y-%m") = ?', [$currentMonth])
+            ->where('status', '!=', 'CANCELED') // Excluir compras canceladas
+            ->first();
+
+        return response()->json($purchases);
+    }
 
 
+    public function getMonthlyPurchases()
+    {
+        $purchases = Purchase::select(
+            DB::raw('DATE_FORMAT(purchase_date, "%Y-%m") as month'),
+            DB::raw('SUM(total) as total_spent')
+        )
+            ->where('status', '!=', 'CANCELED') // Excluir compras canceladas
+            ->groupBy('month')
+            ->orderBy('month', 'asc')
+            ->get();
 
-
+        return response()->json($purchases);
+    }
 
 
 
@@ -131,6 +181,7 @@ class PurchaseController extends Controller
                 'products.*.product_id' => 'required|exists:products,id',
                 'products.*.price' => 'required|numeric|min:0',
                 'products.*.quantity' => 'required|integer|min:1',
+                'products.*.size_id' => 'nullable|exists:sizes,id',  // Validar size_id
             ]);
             Log::info('Datos validados correctamente.');
 
@@ -158,11 +209,13 @@ class PurchaseController extends Controller
 
                 $subtotal = $productData['price'] * $productData['quantity'];
 
+                // Registrar el detalle de la compra con el size_id
                 PurchaseDetails::create([
                     'purchase_id' => $purchase->id,
                     'product_id' => $product->id,
                     'quantity' => $productData['quantity'],
                     'price' => $productData['price'],
+                    'size_id' => $productData['size_id'] ?? null, // Si hay size_id, se guarda; si no, se guarda null
                 ]);
 
                 $product->increment('stock', $productData['quantity']);
@@ -183,7 +236,6 @@ class PurchaseController extends Controller
             return response()->json(['message' => 'Error al registrar la compra', 'error' => $e->getMessage()], 500);
         }
     }
-
 
 
 

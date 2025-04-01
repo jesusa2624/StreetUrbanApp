@@ -37,30 +37,33 @@
                                         </div>
                                         <div class="modal-body">
                                             <form id="formNuevoProvider">
+                                                <div >
+                                                    <label for="ruc" class="form-label">RUC</label>
+                                                        <input type="number" class="form-control" id="ruc"
+                                                            name="ruc" placeholder="RUC del cliente" required>
+                                                        <button type="button" class="btn btn-info mt-2"
+                                                            id="searchRuc">Buscar</button>
+                                                </div>
+
                                                 <div class="mb-3">
                                                     <label for="name" class="form-label">Nombre</label>
-                                                    <input type="text" class="form-control" id="name"
-                                                        name="name" placeholder="Nombre del cliente" required>
+                                                    <input type="text" class="form-control" id="name" name="name"
+                                                        placeholder="Nombre del cliente" required>
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="email" class="form-label">Correo electronico</label>
-                                                    <input type="email" class="form-control" id="email"
-                                                        name="email" placeholder="example@gmail.com" required>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="ruc" class="form-label">RUC</label>
-                                                    <input type="number" class="form-control" id="ruc"
-                                                        name="ruc" placeholder="DNI del cliente" required>
+                                                    <input type="email" class="form-control" id="email" name="email"
+                                                        placeholder="example@gmail.com" required>
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="address" class="form-label">Dirección</label>
-                                                    <input type="text" class="form-control" id="address"
-                                                        name="address" placeholder="Direccion del cliente" required>
+                                                    <input type="text" class="form-control" id="address" name="address"
+                                                        placeholder="Direccion del cliente" required>
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="phone" class="form-label">Celular</label>
-                                                    <input type="number" class="form-control" id="phone"
-                                                        name="phone" placeholder="Numero del cliente" required>
+                                                    <input type="number" class="form-control" id="phone" name="phone"
+                                                        placeholder="Numero del cliente" required>
                                                 </div>
                                                 <input type="hidden" id="idProvider">
                                             </form>
@@ -128,7 +131,7 @@
     <script>
         const clientsJsonUrl = "{{ route('providers.json') }}";
     </script>
-    
+
 
     <script src="{{ asset('assets/js/provider/listado.js') }}"></script>
     <script src="{{ asset('assets/js/provider/registro.js') }}"></script>

@@ -21,19 +21,21 @@ function borrarCliente(id) {
                 if (response.ok) {
                     Swal.fire(
                         'Eliminado!',
-                        'El cliente ha sido eliminado.',
+                        'El cliente ha sido eliminado correctamente.',
                         'success'
                     ).then(() => {
-                        cargarClientes(); // Recargar la tabla o actualizar la lista
+                        cargarClientes(); // Recargar la tabla después de eliminar
                     });
                 } else {
-                    throw new Error('No se pudo eliminar el cliente');
+                    return response.json().then(err => {
+                        throw new Error(err.message || 'No se pudo eliminar el cliente');
+                    });
                 }
             })
             .catch(error => {
                 Swal.fire(
                     'Error',
-                    'Hubo un problema al eliminar el cliente.',
+                    'Hubo un problema al eliminar el cliente: ' + error.message,
                     'error'
                 );
             });

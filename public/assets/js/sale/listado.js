@@ -2,52 +2,70 @@ import { cambiarEstadoVenta } from './status.js'; // Cambiar estado
 import { verVenta } from './verVenta.js'; // Ver detalles de venta
 
 export function cargarVentas() {
-    const tbody = document.querySelector('.table-responsive-principal tbody');
+    const table = $(".table-responsive-principal table").DataTable({
+        destroy: true, // Evita errores al reinicializar
+        processing: true,
+        order: [[0, 'desc']], // Ordenar por ID de forma descendente
+        ajax: function (data, callback) {
+            axios.get('/sales/getSales')
+                .then(response => {
+                    callback({ data: response.data });
+                })
+                .catch(error => {
+                    console.error('Error al cargar ventas:', error);
+                    Swal.fire('Error', 'No se pudieron cargar las ventas.', 'error');
+                    callback({ data: [] });
+                });
+        },
+        columns: [
+            { data: "id", className: "text-center text-xxs font-weight-bolder" },
+            { data: "client_name", className: "text-center text-xxs font-weight-bolder" },
+            { 
+                data: "products",
+                className: "text-center text-xxs font-weight-bolder",
+                render: data => data.map(p => `${p.product_name} (${p.quantity})`).join(", ")
+            },
+            { 
+                data: "status",
+                className: "text-center text-xxs font-weight-bolder",
+                render: (data, _, row) => {
+                    let btnClass = data === 'VALID' ? 'btn-success' : 'btn-danger';
+                    let icon = data === 'VALID' ? 'fa-check' : 'fa-times';
+                    return `<button class="btn ${btnClass} estado-btn" data-id="${row.id}">
+                                ${data === 'VALID' ? 'Activo' : 'Cancelado'}
+                                <i class="fas ${icon}"></i>
+                            </button>`;
+                }
+            },
+            { 
+                data: "total",
+                className: "text-center text-xxs font-weight-bolder",
+                render: data => `PEN ${data}`
+            },
+            { 
+                data: "id",
+                className: "text-center text-xxs font-weight-bolder",
+                render: data => `<button class="btn btn-warning ver-btn" data-id="${data}">
+                                    <i class="fa-solid fa-file-invoice fa-2x"></i>
+                                </button>`
+            }
+        ],
+        language: {
+            url: "https://cdn.datatables.net/plug-ins/1.13.4/i18n/es-ES.json"
+        },
+        responsive: true,
+        lengthMenu: [5, 10, 25, 50],
+        pageLength: 10
+    });
 
-    axios.get('/sales/getSales')
-        .then(response => {
-            const sales = response.data;
+    // Delegación de eventos para los botones
+    $(".table-responsive-principal tbody").on("click", ".estado-btn", function () {
+        let id = $(this).data("id");
+        cambiarEstadoVenta(id);
+    });
 
-            tbody.innerHTML = ''; // Limpia el contenido del tbody
-
-            sales.forEach(sale => {
-                const productsList = sale.products.map(product => 
-                    `${product.product_name} (${product.quantity})`
-                ).join(', ');
-
-                // Crear fila para cada venta
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td class="text-center text-xxs font-weight-bolder">${sale.id}</td>
-                    <td class="text-center text-xxs font-weight-bolder">${sale.client_name}</td>
-                    <td class="text-center text-xxs font-weight-bolder">
-                        <button class="btn estado-btn">
-                            ${sale.status === 'VALID' ? 'Activo' : 'Cancelado'}
-                            <i class="fas ${sale.status === 'VALID' ? 'fa-check' : 'fa-times'}"></i>
-                        </button>
-                    </td>
-                    <td class="text-center text-xxs font-weight-bolder">PEN ${sale.total.toFixed(2)}</td>
-                    <td class="text-center text-xxs font-weight-bolder">
-                        <button class="btn btn-warning ver-btn">
-                            <i class="fa-solid fa-file-invoice fa-2x"></i>
-                        </button>
-                    </td>
-                `;
-
-                tbody.appendChild(row);
-
-                // Configurar el botón de cambiar estado
-                const estadoBtn = row.querySelector('.estado-btn');
-                estadoBtn.className = `btn ${sale.status === 'VALID' ? 'btn-success' : 'btn-danger'}`;
-                estadoBtn.addEventListener('click', () => cambiarEstadoVenta(sale.id));
-
-                // Configurar el botón de ver venta
-                const verBtn = row.querySelector('.ver-btn');
-                verBtn.addEventListener('click', () => verVenta(sale.id));
-            });
-        })
-        .catch(error => {
-            console.error('Error al cargar las ventas:', error);
-            Swal.fire('Error', 'No se pudieron cargar las ventas.', 'error');
-        });
+    $(".table-responsive-principal tbody").on("click", ".ver-btn", function () {
+        let id = $(this).data("id");
+        verVenta(id);
+    });
 }

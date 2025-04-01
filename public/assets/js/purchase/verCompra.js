@@ -16,6 +16,9 @@ export function verCompra(purchaseId) {
                                     Producto
                                 </th>
                                 <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                    Talla
+                                </th>
+                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                     Precio (PEN)
                                 </th>
                                 <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
@@ -30,12 +33,16 @@ export function verCompra(purchaseId) {
             `;
 
             purchase.products.forEach(product => {
+                console.log(product);
+                
                 modalContent += `
                     <tr>
                         <td>${product.product_name}</td>
+                        <td>${product.size}</td>
                         <td>${product.price}</td>
                         <td>${product.quantity}</td>
                         <td>${product.subtotal}</td>
+
                     </tr>
                 `;
             });
@@ -44,15 +51,15 @@ export function verCompra(purchaseId) {
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th colspan="3" class="text-end">Subtotal:</th>
+                                <th colspan="4" class="text-end">Subtotal:</th>
                                 <td>PEN S/. ${(purchase.total / (1 + purchase.tax / 100)).toFixed(2)}</td>
                             </tr>
                             <tr>
-                                <th colspan="3" class="text-end">Impuesto (${purchase.tax}%):</th>
+                                <th colspan="4" class="text-end">Impuesto (${purchase.tax}%):</th>
                                 <td>PEN S/. ${(purchase.total - purchase.total / (1 + purchase.tax / 100)).toFixed(2)}</td>
                             </tr>
                             <tr>
-                                <th colspan="3" class="text-end">Total:</th>
+                                <th colspan="4" class="text-end">Total:</th>
                                 <td>PEN S/. ${purchase.total}</td>
                             </tr>
                         </tfoot>

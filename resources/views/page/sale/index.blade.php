@@ -4,6 +4,10 @@
 
 @section('pages', 'Ventas')
 
+@push('styles')
+<link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.dataTables.css" />
+@endpush
+
 @section('content')
 
     <div class="container-fluid py-4">
@@ -87,10 +91,10 @@
                                                         </div>
                                                     </div>
                                                     <div class="mb-3 col-3">
-                                                        <label for="discount" class="form-label">Porcentaje de descuento</label>
+                                                        <label for="discount" class="form-label">Descuento</label>
                                                         <div class="input-group">
                                                             <div class="input-group-prepend"><span class="input-group-text"
-                                                                    id="basic-addon3">%</span>
+                                                                    id="basic-addon3">S/.</span>
                                                             </div>
                                                             <input type="number" class="form-control" name="discount"
                                                                 id="discount" value="0"
@@ -203,7 +207,8 @@
 
                         </div>
                     </div>
-                    <div class="card-body px-0 pb-2">
+
+                    <div class="card-body px-0 pb-2 m-4 p-3">
                         <div class="table-responsive-principal">
                             <table class="table align-items-center mb-0">
                                 <thead>
@@ -214,7 +219,11 @@
                                         </th>
                                         <th
                                             class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                            Nombre
+                                            Cliente
+                                        </th>
+                                        <th
+                                            class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                            Producto
                                         </th>
                                         <th
                                             class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
@@ -237,6 +246,7 @@
                             </table>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -248,6 +258,10 @@
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+    crossorigin="anonymous"></script>
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
 
     <script>
         const salesJsonUrl = "{{ route('sales.json') }}";

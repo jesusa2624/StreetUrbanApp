@@ -16,23 +16,24 @@ export function savePurchase() {
             tax: tax,
             products: products.map(product => ({
                 product_id: product.id,
+                size_id: product.size.id, // Enviar solo el ID del tamaño
                 price: product.price,
                 quantity: product.quantity,
             })),
         };
 
-
+        
         axios.post('/purchases', purchaseData)
             .then(response => {
                 Swal.fire('Éxito', response.data.message, 'success').then(() => {
-                    resolve(response); // Resuelve la promesa
+                    resolve(response);
                 });
             })
             .catch(error => {
                 console.error('Error completo:', error.response?.data);
                 const errorMessage = error.response?.data?.error || 'Ocurrió un error desconocido.';
                 Swal.fire('Error', errorMessage, 'error');
-                reject(error); // Rechaza la promesa
+                reject(error);
             });
     });
 }

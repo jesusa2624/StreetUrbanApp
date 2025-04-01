@@ -4,6 +4,10 @@
 
 @section('pages', 'Clientes')
 
+@push('styles')
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.dataTables.css" />
+@endpush
+
 @section('content')
 
     <div class="container-fluid py-4">
@@ -37,14 +41,12 @@
                                         </div>
                                         <div class="modal-body">
                                             <form id="formNuevoCliente">
-                                                <div class="mb-3">
+                                                <div>
                                                     <label for="dni" class="form-label">DNI</label>
-                                                    <div class="input-group">
-                                                        <input type="number" class="form-control" id="dni"
-                                                            name="dni" placeholder="DNI del cliente" required>
-                                                        <button type="button" class="btn btn-info"
-                                                            id="searchDni">Buscar</button>
-                                                    </div>
+                                                    <input type="number" class="form-control" id="dni" name="dni"
+                                                        placeholder="DNI del cliente" required>
+                                                    <button type="button" class="btn btn-info mt-1"
+                                                        id="searchDni">Buscar</button>
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="name" class="form-label">Nombre</label>
@@ -86,9 +88,9 @@
 
                         </div>
                     </div>
-                    <div class="card-body px-0 pb-2">
+                    <div class="card-body px-0 pb-2 m-4 p-3">
                         <div class="table-responsive">
-                            <table class="table align-items-center mb-0">
+                            <table id="clientesTabla" class="table align-items-center mb-0">
                                 <thead>
                                     <tr>
                                         <th
@@ -134,6 +136,10 @@
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
 
     <script>
         const clientsJsonUrl = "{{ route('clients.json') }}";

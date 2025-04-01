@@ -29,7 +29,7 @@ export function addProduct() {
 
     const productName = document.querySelector(`#product_id option[value="${productId}"]`).textContent;
 
-    const subtotal = price * quantity * (1 - discount / 100);
+    const subtotal = price * quantity - discount;
 
     const product = {
         id: productId,

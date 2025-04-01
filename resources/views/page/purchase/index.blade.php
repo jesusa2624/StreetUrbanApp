@@ -4,6 +4,10 @@
 
 @section('pages', 'Compras')
 
+@push('styles')
+<link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.dataTables.css" />
+@endpush
+
 @section('content')
 
     <div class="container-fluid py-4">
@@ -50,6 +54,15 @@
                                                             <option value="">Cargando producto...</option>
                                                         </select>
                                                     </div>
+                                                    <div class="mb-3 col-6">
+                                                        <label for="size_id" class="form-label">Talla</label>
+                                                        <select class="form-select" name="size_id" id="size_id">
+                                                            <option value="">Seleccionar Talla</option>
+                                                            <!-- Las tallas se cargarán dinámicamente desde el backend -->
+
+                                                        </select>
+                                                    </div>
+
                                                     <div class="mb-3 col-6">
                                                         <label for="tax" class="form-label">Impuesto</label>
                                                         <div class="input-group">
@@ -110,6 +123,9 @@
                                                                                                     Cantidad</th>
                                                                                                 <th
                                                                                                     class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                                                                    Talla</th>
+                                                                                                <th
+                                                                                                    class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                                                                                     Subtotal(PEN)</th>
                                                                                             </tr>
                                                                                         </thead>
@@ -118,11 +134,11 @@
                                                                                         </tbody>
                                                                                         <tfoot>
                                                                                             <tr>
-                                                                                                <th colspan="5">
+                                                                                                <th colspan="6">
                                                                                                 </th>
                                                                                             </tr>
                                                                                             <tr>
-                                                                                                <th colspan="5">
+                                                                                                <th colspan="6">
                                                                                                     <p class=" text-xxs font-weight-bolder"
                                                                                                         align="right">
                                                                                                         TOTAL: <span
@@ -132,7 +148,7 @@
 
                                                                                             </tr>
                                                                                             <tr>
-                                                                                                <th colspan="5">
+                                                                                                <th colspan="6">
                                                                                                     <p class=" text-xxs font-weight-bolder"
                                                                                                         align="right">
                                                                                                         TOTAL IMPUESTO
@@ -143,7 +159,7 @@
 
                                                                                             </tr>
                                                                                             <tr>
-                                                                                                <th colspan="5">
+                                                                                                <th colspan="6">
                                                                                                     <p class=" text-xxs font-weight-bolder"
                                                                                                         align="right">
                                                                                                         TOTAL PAGAR: <span
@@ -179,14 +195,18 @@
 
                         </div>
                     </div>
-                    <div class="card-body px-0 pb-2">
+                    <div class="card-body px-0 pb-2 m-4 p-3">
                         <div class="table-responsive-principal">
-                            <table class="table align-items-center mb-0">
+                            <table id="purchasesTable" class="table align-items-center mb-0">
                                 <thead>
                                     <tr>
                                         <th
                                             class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                            ID
+                                            Nº
+                                        </th>
+                                        <th
+                                            class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                            Fecha
                                         </th>
                                         <th
                                             class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
@@ -194,9 +214,13 @@
                                         </th>
                                         <th
                                             class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                            Talla
+                                        </th>
+                                        <th
+                                            class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                             Estado
                                         </th>
-                                        
+
                                         <th
                                             class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                             Total
@@ -224,6 +248,11 @@
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+    crossorigin="anonymous"></script>
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
+
 
     <script>
         const purchasesJsonUrl = "{{ route('purchases.json') }}";

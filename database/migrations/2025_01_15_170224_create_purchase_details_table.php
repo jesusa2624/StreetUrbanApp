@@ -19,9 +19,13 @@ return new class extends Migration
             $table->foreign('product_id')->references('id')->on('products');
             $table->integer('quantity');
             $table->decimal('price');
+
+            // Asegurarse de que 'size_id' pueda ser nulo antes de agregar la clave foránea
+            $table->unsignedBigInteger('size_id')->nullable();
+            $table->foreign('size_id')->references('id')->on('sizes')->onDelete('set null');
+
             $table->timestamps();
         });
-        
     }
 
     /**
@@ -29,6 +33,14 @@ return new class extends Migration
      */
     public function down(): void
     {
+        // Primero eliminamos la clave foránea antes de eliminar la tabla
+        Schema::table('purchase_details', function (Blueprint $table) {
+            $table->dropForeign(['purchase_id']);
+            $table->dropForeign(['product_id']);
+            $table->dropForeign(['size_id']);
+        });
+
+        // Luego eliminamos la tabla 'purchase_details'
         Schema::dropIfExists('purchase_details');
     }
 };

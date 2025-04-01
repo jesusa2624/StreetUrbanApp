@@ -39,76 +39,33 @@ function abrirModalEditar(id) {
         });
 }
 
-// Función para buscar datos por DNI
+// Función para buscar datos por DNI utilizando ConsultasPeru
 function buscarPorDNI() {
-    const dniInput = document.getElementById('dni');
-    const dni = dniInput.value.trim();
+    const dni = document.getElementById('dni').value.trim();
 
     if (!dni || dni.length !== 8 || isNaN(dni)) {
         Swal.fire('Error', 'Ingrese un DNI válido de 8 dígitos.', 'error');
         return;
     }
 
-    // Codificar la URL para evitar errores con caracteres especiales
-    const url = `https://cors-anywhere.herokuapp.com/https://api.apis.net.pe/v2/reniec/dni?numero=${dni}`;
-    console.log('URL generada:', url);
-
-    // Realizar la solicitud a la API
-    axios.get(url, {
-        headers: {
-            Authorization: `Bearer apis-token-12793.ndN8GZi5D3ldyMaqDMSx8Gd9GtCjiaxz`,
-            'Content-Type': 'application/json',
-        }
-    })
+    fetch(`/buscar-dni/${dni}`)
         .then(response => {
-            const data = response.data;
-
-            // Validar si los datos existen
-            if (!data || !data.nombres) {
-                Swal.fire('Error', 'No se encontraron datos para este DNI.', 'error');
-                return;
+            if (!response.ok) {
+                throw new Error(`Error HTTP: ${response.status}`);
             }
-
-            // Actualizar los campos del formulario
-            document.getElementById('name').value = `${data.nombres} ${data.apellidoPaterno} ${data.apellidoMaterno}`;
-            document.getElementById('address').value = data.direccion || 'Dirección no registrada';
-
-            Swal.fire({
-                title: 'Información encontrada',
-                icon: 'success',
-                toast: true,
-                position: 'top-end', // Puedes cambiar a 'center', 'top', 'bottom', etc.
-                showConfirmButton: false,
-                timer: 4000, // La alerta desaparecerá en 4 segundos
-                timerProgressBar: true,
-                customClass: {
-                    popup: 'swal-success-border' // Aplica una clase CSS personalizada
-                }
-            });
-
-
+            return response.json();
+        })
+        .then(data => {
+            if (data.nombre) {
+                document.getElementById('name').value = data.nombre;
+                Swal.fire('Éxito', 'Datos encontrados correctamente.', 'success');
+            } else {
+                Swal.fire('Error', 'No se encontraron datos para este DNI.', 'error');
+            }
         })
         .catch(error => {
-            if (error.response) {
-                console.error('Detalles del error:', error.response.data);
-                Swal.fire({
-                    title: 'Error',
-                    text: `Error al consultar el DNI: ${error.response.data.error || 'Desconocido'}`,
-                    icon: 'error',
-                    toast: true,  // Hace que sea un toast
-                    position: 'top-end', // Posición en la pantalla
-                    showConfirmButton: false, // No muestra botón de confirmación
-                    timer: 4000, // La alerta desaparecerá en 4 segundos
-                    timerProgressBar: true, // Muestra una barra de progreso
-                    customClass: {
-                        popup: 'swal-error-border' // Puedes aplicar una clase CSS personalizada
-                    }
-                });
-                Swal.fire('Error', `Error al consultar el DNI: ${error.response.data.error || 'Desconocido'}`, 'error');
-            } else {
-           console.error('Error al consultar el DNI:', error);
-                Swal.fire('Error', 'No se pudo obtener la información del cliente.', 'error');     
-            }
+            console.error('Error al consultar el DNI:', error);
+            Swal.fire('Error', 'Hubo un problema al consultar los datos.', 'error');
         });
 }
 

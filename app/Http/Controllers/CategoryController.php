@@ -21,8 +21,8 @@ class CategoryController extends Controller
         $categories = Category::all(); // Recupera todas las categorías
         return response()->json($categories); // Retorna los datos en formato JSON
     }
-
-    /**
+ 
+    /*
      * Show the form for creating a new resource.
      */
     public function create()

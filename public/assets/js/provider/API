@@ -1,0 +1,95 @@
+let isEditMode = false;
+
+// Función para abrir el modal en modo "Crear"
+function abrirModalCrear() {
+    isEditMode = false;
+    document.getElementById('modalNuevoProviderLabel').innerText = 'Registro de Proveedor';
+    document.getElementById('formNuevoProvider').reset();
+    document.getElementById('idProvider').value = '';
+    const modal = new bootstrap.Modal(document.getElementById('modalNuevoProvider'));
+    modal.show();
+} 
+
+// Función para abrir el modal en modo "Editar"
+function abrirModalEditar(id) {
+    isEditMode = true;
+    document.getElementById('modalNuevoProviderLabel').innerText = 'Editar Proveedor';
+
+    fetch(`/providers/${id}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Error HTTP: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            document.getElementById('idProvider').value = data.id;
+            document.getElementById('name').value = data.name;
+            document.getElementById('email').value = data.email;
+            document.getElementById('ruc').value = data.ruc;
+            document.getElementById('address').value = data.address;
+            document.getElementById('phone').value = data.phone;
+            const modal = new bootstrap.Modal(document.getElementById('modalNuevoProvider'));
+            modal.show();
+        })
+        .catch(error => {
+            console.error('Error al obtener los datos del proveedor:', error);
+            alert('Hubo un problema al cargar los datos del proveedor.');
+        });
+}
+
+// Función para buscar datos por RUC utilizando API MIGO
+
+function buscarPorRUC() {
+    const rucInput = document.getElementById('ruc');
+    const ruc = rucInput.value.trim();
+
+    if (!ruc || ruc.length !== 11 || isNaN(ruc)) {
+        Swal.fire('Error', 'Ingrese un RUC válido de 11 dígitos.', 'error');
+        return;
+    }
+
+    const url = 'https://api.migo.pe/api/v1/ruc';
+    const token = 'hy710thjjGzf1L6rj931eoDepuu5lnM9WcCUGn9CZUXCKuDAjv6tTKTVDhmH'; // Reemplaza con tu token proporcionado por MIGO.
+
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            token: token,
+            ruc: ruc
+        }),
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Error HTTP: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                document.getElementById('name').value = data.nombre_o_razon_social || 'Razón social no disponible';
+                document.getElementById('address').value = data.direccion_simple || 'Dirección no disponible';
+                Swal.fire('Éxito', 'Datos encontrados correctamente.', 'success');
+            } else {
+                Swal.fire('Error', 'No se encontraron datos para este RUC.', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error al consultar el RUC:', error);
+            Swal.fire('Error', 'Hubo un problema al consultar los datos.', 'error');
+        });
+}
+
+
+//Asociar la funcion al boton 
+
+document.addEventListener('DOMContentLoaded', () => {
+    const searchRucButton = document.getElementById('searchRuc');
+    if (searchRucButton) {
+        searchRucButton.addEventListener('click', buscarPorRUC);
+    }
+});

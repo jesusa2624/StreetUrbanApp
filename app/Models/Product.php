@@ -19,4 +19,13 @@ class Product extends Model
     {
         return $this->belongsTo(Provider::class, 'provider_id');
     }
+
+    public function sizes()
+    {
+        return $this->belongsToMany(Size::class, 'product_size', 'product_id', 'size_id');
+    }
+    public function saleDetails()
+    {
+        return $this->hasMany(SaleDetail::class, 'product_id');
+    }
 }

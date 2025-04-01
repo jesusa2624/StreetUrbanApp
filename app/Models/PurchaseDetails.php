@@ -11,12 +11,21 @@ class PurchaseDetails extends Model
         'product_id',
         'quantity',
         'price',
-
+        'size_id',  // Agregar el campo para la talla
     ];
+
     public function purchase(){
         return $this->belongsTo(Purchase::class);
     }
+
     public function product(){
         return $this->belongsTo(Product::class);
     }
+
+    public function size()
+{
+    return $this->belongsTo(Size::class, 'size_id');  // Referencia clara a la columna 'size_id'
 }
+
+}
+

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -113,6 +114,30 @@ class ProductController extends Controller
         }
     }
 
+    public function getTopSellingProducts()
+    {
+        $topProducts = DB::table('sale_details')
+            ->join('products', 'sale_details.product_id', '=', 'products.id')
+            ->join('sales', 'sale_details.sale_id', '=', 'sales.id') // Unir con la tabla de ventas
+            ->where('sales.status', '!=', 'CANCELED') // Excluir ventas canceladas
+            ->select(
+                'products.id',
+                'products.image',
+                'products.name',
+                'products.code',
+                'products.stock',
+                DB::raw('SUM(sale_details.quantity) as total_sold')
+            )
+            ->groupBy('products.id', 'products.image', 'products.name', 'products.code', 'products.stock')
+            ->orderByDesc('total_sold')
+            ->limit(10) // Top 10 productos más vendidos
+            ->get();
+
+        return response()->json($topProducts);
+    }
+
+
+
 
 
     /**
@@ -211,12 +236,16 @@ class ProductController extends Controller
             return response()->json(['error' => 'Producto no encontrado'], 404);
         }
 
+        // Elimina los detalles de venta relacionados si existen
+        $product->saleDetails()->delete();
+
         // Elimina la imagen si existe
         if ($product->image) {
             \Storage::disk('public')->delete($product->image);
         }
 
         $product->delete();
+
         return response()->json(['message' => 'Producto eliminado exitosamente']);
     }
 }

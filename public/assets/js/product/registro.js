@@ -50,11 +50,21 @@ document.getElementById('submitForm').addEventListener('click', function () {
                 icon: 'success',
                 confirmButtonText: 'Aceptar',
             }).then(() => {
-                const modal = bootstrap.Modal.getInstance(document.getElementById('modalNuevoProduct'));
-                modal.hide();
-                cargarProducts(); // Recarga la tabla de productos
+                const modalElement = document.getElementById('modalNuevoProduct');
+                const modalInstance = bootstrap.Modal.getInstance(modalElement);
+
+                if (modalInstance) {
+                    modalInstance.hide();
+                    modalElement.addEventListener('hidden.bs.modal', function () {
+                        cargarProducts(); // Asegura que la tabla se recargue después de cerrar el modal
+                    }, { once: true });
+                } else {
+                    cargarProducts(); // Si el modal no está abierto, recarga directamente
+                }
             });
+
         })
+
         .catch(error => {
             console.error('Error en la solicitud:', error);
             Swal.fire({

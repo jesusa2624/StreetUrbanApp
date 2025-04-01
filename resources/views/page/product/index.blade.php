@@ -4,6 +4,10 @@
 
 @section('pages', 'Productos')
 
+@push('styles')
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.dataTables.css" />
+@endpush
+
 @section('content')
 
     <div class="container-fluid py-4">
@@ -44,7 +48,8 @@
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="code" class="form-label">Código de Barras</label>
-                                                    <input type="text" class="form-control" id="code" name="code" readonly placeholder="Generando código..." />
+                                                    <input type="text" class="form-control" id="code" name="code"
+                                                        readonly placeholder="Generando código..." />
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="sell_price" class="form-label">Precio de Venta</label>
@@ -65,11 +70,13 @@
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="picture" class="form-label">Imagen del Producto</label>
-                                                    <input type="file" name="image" id="image" class="form-control"/>
+                                                    <input type="file" name="image" id="image"
+                                                        class="form-control" />
                                                 </div>
                                                 <div class="mb-3">
                                                     <!-- Contenedor para la vista previa -->
-                                                    <img id="preview" alt="Vista previa de la imagen" class="img-thumbnail" style="max-height: 200px; display: none;" />
+                                                    <img id="preview" alt="Vista previa de la imagen"
+                                                        class="img-thumbnail" style="max-height: 200px; display: none;" />
                                                 </div>
                                                 <input type="hidden" id="idProduct">
                                             </form>
@@ -85,9 +92,11 @@
 
                         </div>
                     </div>
-                    <div class="card-body px-0 pb-2">
+
+                    <div class="card-body px-0 pb-2 m-4 p-3">
                         <div class="table-responsive">
-                            <table class="table align-items-center mb-0">
+                            <table id="productosTable" class="table align-items-center mb-0">
+
                                 <thead>
                                     <tr>
                                         <th
@@ -126,6 +135,7 @@
                             </table>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -137,6 +147,10 @@
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
 
     <script>
         const productsJsonUrl = "{{ route('products.json') }}";
@@ -172,5 +186,4 @@
     <script src="{{ asset('assets/js/product/eliminar.js') }}"></script>
     <script src="{{ asset('assets/js/product/select.js') }}"></script>
     <script src="{{ asset('assets/js/product/codigo_barras.js') }}"></script>
-
 @endpush

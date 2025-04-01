@@ -1,0 +1,100 @@
+let isEditMode = false;
+
+// Función para abrir el modal en modo "Crear"
+function abrirModalCrear() {
+    isEditMode = false;
+    document.getElementById('modalNuevoProviderLabel').innerText = 'Registro de Proveedor';
+    document.getElementById('formNuevoProvider').reset();
+    document.getElementById('idProvider').value = '';
+    const modal = new bootstrap.Modal(document.getElementById('modalNuevoProvider'));
+    modal.show();
+} 
+
+// Función para abrir el modal en modo "Editar"
+function abrirModalEditar(id) {
+    isEditMode = true;
+    document.getElementById('modalNuevoProviderLabel').innerText = 'Editar Proveedor';
+
+    fetch(`/providers/${id}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Error HTTP: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            document.getElementById('idProvider').value = data.id;
+            document.getElementById('name').value = data.name;
+            document.getElementById('email').value = data.email;
+            document.getElementById('ruc').value = data.ruc;
+            document.getElementById('address').value = data.address;
+            document.getElementById('phone').value = data.phone;
+            const modal = new bootstrap.Modal(document.getElementById('modalNuevoProvider'));
+            modal.show();
+        })
+        .catch(error => {
+            console.error('Error al obtener los datos del proveedor:', error);
+            alert('Hubo un problema al cargar los datos del proveedor.');
+        });
+}
+
+// Función para buscar datos por RUC utilizando ConsultasPeru
+
+function buscarPorRUC() {
+    const rucInput = document.getElementById('ruc');
+    const ruc = rucInput.value.trim();
+
+    if (!ruc || ruc.length !== 11 || isNaN(ruc)) {
+        Swal.fire('Error', 'Ingrese un RUC válido de 11 dígitos.', 'error');
+        return;
+    }
+
+    const url = 'https://api.consultasperu.com/api/v1/query';
+    const token = '88ead1d6c55cf4a329134767614d0b008b9402abc1ffbd374e100bf5efa54119'; // Reemplaza con tu token proporcionado por ConsultasPeru.
+
+    // Cuerpo de la solicitud
+    const body = {
+        token: token,
+        type_document: 'ruc',
+        document_number: ruc,
+    };
+
+    // Opciones de la solicitud
+    const options = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body),
+    };
+
+    // Realizar la solicitud
+    fetch(url, options)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Error HTTP: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                document.getElementById('name').value = data.data.name;
+                document.getElementById('address').value = data.data.address;
+            } else {
+                Swal.fire('Error', data.message, 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error al obtener los datos del RUC:', error);
+            alert('Hubo un problema al cargar los datos del RUC.');
+        });
+}
+
+//Asociar la funcion al boton 
+
+document.addEventListener('DOMContentLoaded', () => {
+    const searchRucButton = document.getElementById('searchRuc');
+    if (searchRucButton) {
+        searchRucButton.addEventListener('click', buscarPorRUC);
+    }
+});

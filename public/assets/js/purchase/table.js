@@ -20,6 +20,7 @@ export function renderTable() {
             <td class="align-middle text-center text-sm">${product.name}</td>
             <td class="align-middle text-center text-sm">PEN ${product.price.toFixed(2)}</td>
             <td class="align-middle text-center text-sm">${product.quantity}</td>
+            <td class="text-center text-xxs font-weight-bolder">${product.size.name}</td> <!-- Acceder al nombre -->
             <td class="align-middle text-center text-sm">PEN ${product.subtotal.toFixed(2)}</td>
         `;
         tbody.appendChild(row);
@@ -27,10 +28,12 @@ export function renderTable() {
         // Agrega el evento click al botón "Eliminar"
         const deleteButton = row.querySelector('button');
         deleteButton.addEventListener('click', () => {
-            removeProduct(index); // Llama a la función para eliminar el producto
+            removeProduct(index);
         });
     });
 }
+
+
 
 // Calcular totales
 export function calculateTotals() {

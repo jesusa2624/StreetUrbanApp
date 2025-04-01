@@ -10,7 +10,7 @@ class ClientSeeder extends Seeder
     public function run()
     {
         Client::create([
-            'name' => 'Sin Datos',
+            'name' => 'Sin Registro',
             'dni' => '00000000',
             'ruc' => '00000000',
             'address' => 'Sin Dirección',
