@@ -10,7 +10,7 @@
                             <div class="row">
                                 <div class="col-8 text-start">
                                     <div class="icon icon-shape bg-white shadow text-center border-radius-2xl">
-                                        <i class="ni ni-circle-08 text-dark text-gradient text-lg opacity-10" aria-hidden="true"></i>
+                                        <i class="ni ni-circle-08 text-dark text-gradient text-lg opacity-10" ></i>
                                     </div>
                                     <h5 class="text-white font-weight-bolder mb-0 mt-3">
                                         1600
@@ -41,7 +41,7 @@
                             <div class="row">
                                 <div class="col-8 text-start">
                                     <div class="icon icon-shape bg-white shadow text-center border-radius-2xl">
-                                        <i class="ni ni-active-40 text-dark text-gradient text-lg opacity-10" aria-hidden="true"></i>
+                                        <i class="ni ni-active-40 text-dark text-gradient text-lg opacity-10"></i>
                                     </div>
                                     <h5 class="text-white font-weight-bolder mb-0 mt-3">
                                         357
@@ -74,7 +74,7 @@
                             <div class="row">
                                 <div class="col-8 text-start">
                                     <div class="icon icon-shape bg-white shadow text-center border-radius-2xl">
-                                        <i class="ni ni-cart text-dark text-gradient text-lg opacity-10" aria-hidden="true"></i>
+                                        <i class="ni ni-cart text-dark text-gradient text-lg opacity-10" ></i>
                                     </div>
                                     <h5 class="text-white font-weight-bolder mb-0 mt-3">
                                         2300
@@ -105,7 +105,7 @@
                             <div class="row">
                                 <div class="col-8 text-start">
                                     <div class="icon icon-shape bg-white shadow text-center border-radius-2xl">
-                                        <i class="ni ni-like-2 text-dark text-gradient text-lg opacity-10" aria-hidden="true"></i>
+                                        <i class="ni ni-like-2 text-dark text-gradient text-lg opacity-10" ></i>
                                     </div>
                                     <h5 class="text-white font-weight-bolder mb-0 mt-3">
                                         940
@@ -200,7 +200,7 @@
                         <div class="col-lg-6 col-7">
                             <h6>Projects</h6>
                             <p class="text-sm mb-0">
-                                <i class="fa fa-check text-info" aria-hidden="true"></i>
+                                <i class="fa fa-check text-info" ></i>
                                 <span class="font-weight-bold ms-1">30 done</span> this month
                             </p>
                         </div>
@@ -472,7 +472,7 @@
                 <div class="card-header pb-0">
                     <h6>Orders overview</h6>
                     <p class="text-sm">
-                        <i class="fa fa-arrow-up text-success" aria-hidden="true"></i>
+                        <i class="fa fa-arrow-up text-success"></i>
                         <span class="font-weight-bold">24%</span> this month
                     </p>
                 </div>
@@ -549,7 +549,7 @@
                                 <p class="mb-5">From colors, cards, typography to complex elements, you will find the full documentation.</p>
                                 <a class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto" href="javascript:;">
                                     Read More
-                                    <i class="fas fa-arrow-right text-sm ms-1" aria-hidden="true"></i>
+                                    <i class="fas fa-arrow-right text-sm ms-1"></i>
                                 </a>
                             </div>
                         </div>
@@ -574,7 +574,7 @@
                         <p class="text-white">Wealth creation is an evolutionarily recent positive-sum game. It is all about who take the opportunity first.</p>
                         <a class="text-white text-sm font-weight-bold mb-0 icon-move-right mt-auto" href="javascript:;">
                             Read More
-                            <i class="fas fa-arrow-right text-sm ms-1" aria-hidden="true"></i>
+                            <i class="fas fa-arrow-right text-sm ms-1"></i>
                         </a>
                     </div>
                 </div>

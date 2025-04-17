@@ -17,3 +17,5 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('quantity').addEventListener('input', validateStock);
     document.getElementById('submitForm').addEventListener('click', validateStock);
 });
+
+

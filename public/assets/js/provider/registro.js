@@ -27,6 +27,7 @@ document.getElementById('submitForm').addEventListener('click', function () {
                     icon: 'success',
                     confirmButtonText: 'Aceptar',
                 }).then(() => {
+                    // Cerrar el modal
                     const modal = bootstrap.Modal.getInstance(document.getElementById('modalNuevoProvider'));
                     modal.hide(); // Cierra el modal
                     cargarProviders(); // Recarga la tabla
@@ -46,4 +47,11 @@ document.getElementById('submitForm').addEventListener('click', function () {
                 confirmButtonText: 'Intentar de nuevo',
             });
         });
+});
+
+// Agregar el evento de cerrar al botón de cancelar
+document.getElementById('cancelButton').addEventListener('click', function () {
+    // Cerrar el modal
+    const modal = bootstrap.Modal.getInstance(document.getElementById('modalNuevoProvider'));
+    modal.hide();
 });

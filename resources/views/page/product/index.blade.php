@@ -30,7 +30,7 @@
 
                             <!-- Modal -->
                             <div class="modal fade" id="modalNuevoProduct" tabindex="-1"
-                                aria-labelledby="modalNuevoProductLabel" aria-hidden="true">
+                                aria-labelledby="modalNuevoProductLabel" >
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">

@@ -17,65 +17,65 @@
                             </div>
                             <div class="col-lg-6 col-5 my-auto text-end">
                                 <div class="dropdown float-lg-end pe-4">
+                                    <!-- Botón para abrir modal (HTML puro) -->
                                     <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                                         data-bs-target="#modalNuevoProvider">
-                                        + Nuevo Proovedor
+                                        + Nuevo Proveedor
                                     </button>
                                 </div>
                             </div>
 
                             <!-- Modal -->
-                            <div class="modal fade" id="modalNuevoProvider" tabindex="-1"
-                                aria-labelledby="modalNuevoProviderLabel" aria-hidden="true">
+                           <div class="modal fade" id="modalNuevoProvider" tabindex="-1">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="modalNuevoProviderLabel">Registro de Cliente
-                                            </h5>
+                                            <h5 class="modal-title" id="modalNuevoProviderLabel">Registro de Proveedor</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                 aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
                                             <form id="formNuevoProvider">
-                                                <div >
+                                                <div>
                                                     <label for="ruc" class="form-label">RUC</label>
-                                                        <input type="number" class="form-control" id="ruc"
-                                                            name="ruc" placeholder="RUC del cliente" required>
-                                                        <button type="button" class="btn btn-info mt-2"
-                                                            id="searchRuc">Buscar</button>
+                                                    <input type="number" class="form-control" id="ruc" name="ruc"
+                                                        placeholder="RUC del proveedor" required>
+                                                    <button type="button" class="btn btn-info mt-2"
+                                                        id="searchRuc">Buscar</button>
                                                 </div>
 
                                                 <div class="mb-3">
                                                     <label for="name" class="form-label">Nombre</label>
                                                     <input type="text" class="form-control" id="name" name="name"
-                                                        placeholder="Nombre del cliente" required>
+                                                        placeholder="Nombre del proveedor" required>
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label for="email" class="form-label">Correo electronico</label>
+                                                    <label for="email" class="form-label">Correo electrónico</label>
                                                     <input type="email" class="form-control" id="email" name="email"
                                                         placeholder="example@gmail.com" required>
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="address" class="form-label">Dirección</label>
                                                     <input type="text" class="form-control" id="address" name="address"
-                                                        placeholder="Direccion del cliente" required>
+                                                        placeholder="Dirección del proveedor" required>
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="phone" class="form-label">Celular</label>
                                                     <input type="number" class="form-control" id="phone" name="phone"
-                                                        placeholder="Numero del cliente" required>
+                                                        placeholder="Número del proveedor" required>
                                                 </div>
                                                 <input type="hidden" id="idProvider">
                                             </form>
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary"
-                                                data-bs-dismiss="modal">Cancelar</button>
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                                                id="cancelButton">Cancelar</button>
                                             <button type="button" class="btn btn-primary" id="submitForm">Guardar</button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+
 
                         </div>
                     </div>

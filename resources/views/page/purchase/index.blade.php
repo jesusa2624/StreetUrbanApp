@@ -30,7 +30,7 @@
 
                             <!-- Modal -->
                             <div class="modal fade" id="modalNuevoPurchase" tabindex="-1"
-                                aria-labelledby="modalNuevoPurchaseLabel" aria-hidden="true">
+                                aria-labelledby="modalNuevoPurchaseLabel" >
                                 <div class="modal-dialog modal-xl">
                                     <div class="modal-content" style="background-color: #f7f7f7;">
                                         <div class="modal-header">

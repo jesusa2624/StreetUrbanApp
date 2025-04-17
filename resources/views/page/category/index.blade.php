@@ -26,7 +26,7 @@
 
                             <!-- Modal -->
                             <div class="modal fade" id="modalNuevaCategoria" tabindex="-1"
-                                aria-labelledby="modalNuevaCategoriaLabel" aria-hidden="true">
+                                aria-labelledby="modalNuevaCategoriaLabel" >
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">

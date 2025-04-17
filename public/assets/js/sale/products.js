@@ -5,10 +5,13 @@ export function addProduct() {
     const price = parseFloat(document.getElementById('price').value);
     const quantity = parseInt(document.getElementById('quantity').value);
     const discount = parseFloat(document.getElementById('discount').value) || 0;
+    const sizeId = document.getElementById('size').value;
+    console.log('Selected size_id:', sizeId);
+    
 
     // Validar campos básicos
-    if (!productId || isNaN(price) || isNaN(quantity) || quantity <= 0 || price <= 0) {
-        Swal.fire('Error', 'Por favor complete todos los campos correctamente.', 'error');
+    if (!productId || isNaN(price) || isNaN(quantity) || quantity <= 0 || price <= 0 || !sizeId) {
+        Swal.fire('Error', 'Por favor complete todos los campos correctamente, incluyendo la talla.', 'error');
         return;
     }
 
@@ -34,6 +37,7 @@ export function addProduct() {
     const product = {
         id: productId,
         name: productName,
+        size_id: sizeId, // Agregar el size_id
         price,
         quantity,
         discount,
@@ -45,3 +49,6 @@ export function addProduct() {
     renderTable();
     calculateTotals();
 }
+
+
+

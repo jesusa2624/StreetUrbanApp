@@ -18,14 +18,16 @@ return new class extends Migration
 
             $table->unsignedBigInteger('sale_id');
             $table->foreign('sale_id')->references('id')->on('sales')->onDelete('cascade');
+
             $table->unsignedBigInteger('product_id');
             $table->foreign('product_id')->references('id')->on('products')->onDelete('restrict');
 
+            $table->unsignedBigInteger('size_id'); // Agregamos la columna size_id
+            $table->foreign('size_id')->references('id')->on('sizes')->onDelete('restrict'); // Relación con la tabla sizes
+
             $table->integer('quantity');
-            $table->decimal('price');
-
-            $table->decimal('discount');
-
+            $table->decimal('price', 10, 2); // Especificamos precisión para el precio
+            $table->decimal('discount', 10, 2); // Especificamos precisión para el descuento
 
             $table->timestamps();
         });

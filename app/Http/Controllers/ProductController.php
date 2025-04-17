@@ -19,9 +19,32 @@ class ProductController extends Controller
 
     public function getProducts()
     {
-        $products = Product::with('category')->get(); // Recupera todos los productos
-        return response()->json($products); // Retorna los datos en formato JSON
+        $products = Product::with(['category', 'purchaseDetails.size']) // Asegúrate de cargar la relación 'category'
+            ->get()
+            ->map(function ($product) {
+                return [
+                    'id' => $product->id,
+                    'name' => $product->name,
+                    'code' => $product->code,
+                    'stock' => $product->stock,
+                    'sell_price' => $product->sell_price,
+                    'status' => $product->status,
+                    'category' => $product->category ?: 'Sin Categoría', // Asegúrate de que la categoría esté presente
+                    'image' => $product->image,
+                    'sizes' => $product->purchaseDetails->map(function ($detail) {
+                        return [
+                            'id' => $detail->size->id,
+                            'name' => $detail->size->name,
+                            'stock' => $detail->quantity, // Usar quantity como stock por talla
+                        ];
+                    })->unique('id')->values(),
+                ];
+            });
+
+        return response()->json($products);
     }
+
+
 
     public function getProductDetails($id)
     {
@@ -42,6 +65,14 @@ class ProductController extends Controller
             'sell_price' => $product->sell_price,
         ]);
     }
+
+    public function getSizes($productId)
+    {
+        $product = Product::findOrFail($productId);
+        $sizes = $product->sizes;  // Asumiendo que tienes una relación `sizes()` en el modelo Product
+        return response()->json($sizes);
+    }
+
 
 
     /**
@@ -135,6 +166,27 @@ class ProductController extends Controller
 
         return response()->json($topProducts);
     }
+
+    public function getSizesByProduct($id)
+    {
+        $product = Product::with(['purchaseDetails.size'])->findOrFail($id);
+
+        $sizes = $product->purchaseDetails
+            ->groupBy('size_id')
+            ->map(function ($items) {
+                $first = $items->first();
+                return [
+                    'size_id' => $first->size_id,
+                    'size_name' => $first->size->name,
+                    'stock' => $items->sum('quantity'),
+                    'price' => $first->product->sell_price,
+                    'code' => $first->product->code,
+                ];
+            })->values();
+
+        return response()->json($sizes);
+    }
+
 
 
 

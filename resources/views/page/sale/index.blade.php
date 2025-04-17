@@ -5,7 +5,7 @@
 @section('pages', 'Ventas')
 
 @push('styles')
-<link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.dataTables.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.dataTables.css" />
 @endpush
 
 @section('content')
@@ -30,7 +30,7 @@
 
                             <!-- Modal -->
                             <div class="modal fade" id="modalNuevoSale" tabindex="-1"
-                                aria-labelledby="modalNuevoSaleLabel" aria-hidden="true">
+                                aria-labelledby="modalNuevoSaleLabel">
                                 <div class="modal-dialog modal-xl">
                                     <div class="modal-content" style="background-color: #f7f7f7;">
                                         <div class="modal-header">
@@ -52,6 +52,12 @@
                                                         <label for="product_id" class="form-label">Producto</label>
                                                         <select class="form-select" name="product_id" id="product_id">
                                                             <option value="">Cargando producto...</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="mb-3 col-3">
+                                                        <label for="size" class="form-label">Talla</label>
+                                                        <select class="form-select" name="size" id="size">
+                                                            <option value="">Seleccione un producto primero</option>
                                                         </select>
                                                     </div>
                                                     <div class="mb-3 col-3">
@@ -93,8 +99,8 @@
                                                     <div class="mb-3 col-3">
                                                         <label for="discount" class="form-label">Descuento</label>
                                                         <div class="input-group">
-                                                            <div class="input-group-prepend"><span class="input-group-text"
-                                                                    id="basic-addon3">S/.</span>
+                                                            <div class="input-group-prepend"><span
+                                                                    class="input-group-text" id="basic-addon3">S/.</span>
                                                             </div>
                                                             <input type="number" class="form-control" name="discount"
                                                                 id="discount" value="0"
@@ -196,11 +202,12 @@
                                             </form>
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary"
-                                                data-bs-dismiss="modal">Cancelar</button>
-                                                <button type="button" class="btn btn-primary" id="saveSale">Guardar</button>
-
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                                                id="cancelButton">Cancelar</button>
+                                            <button type="button" class="btn btn-primary"
+                                                id="saveSale">Guardar</button>
                                         </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -229,7 +236,7 @@
                                             class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                             Estado
                                         </th>
-                                        
+
                                         <th
                                             class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                             Total
@@ -260,7 +267,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
-    crossorigin="anonymous"></script>
+        crossorigin="anonymous"></script>
     <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
 
     <script>
@@ -277,12 +284,13 @@
     <script type="module" src="{{ asset('assets/js/sale/verVenta.js') }}"></script>
     <script type="module" src="{{ asset('assets/js/sale/status.js') }}"></script>
 
+   
 
     {{-- <script type="module" src="{{ asset('assets/js/purchase/eliminar.js') }}"></script> --}}
 
 
 
-    
+
     <!-- Archivos No Módulo -->
     <script src="{{ asset('assets/js/sale/select.js') }}"></script>
 @endpush

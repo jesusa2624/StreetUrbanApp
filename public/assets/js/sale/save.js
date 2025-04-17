@@ -11,17 +11,22 @@ export function saveSale() {
             return;
         }
 
+        // Preparar los datos de la venta, asegurándose de incluir el `size_id`
         const saleData = {
             client_id: clientId,
             tax: tax,
             products: products.map(product => ({
                 product_id: product.id,
+                size_id: product.size_id, // Añadir el size_id
                 price: product.price,
                 quantity: product.quantity,
                 discount: product.discount,
             })),
         };
 
+        console.log('Sale Data:', saleData);
+
+        // Enviar la solicitud de venta al servidor
         axios.post('/sales', saleData)
             .then(response => {
                 Swal.fire('Éxito', response.data.message, 'success').then(() => {
@@ -35,4 +40,7 @@ export function saveSale() {
                 reject(error);
             });
     });
+
 }
+
+

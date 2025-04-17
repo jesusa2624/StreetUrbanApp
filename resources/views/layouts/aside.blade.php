@@ -139,7 +139,7 @@
         <div class="card-body text-start p-3 w-100">
             <div
                 class="icon icon-shape icon-sm bg-white shadow text-center mb-3 d-flex align-items-center justify-content-center border-radius-md">
-                <i class="ni ni-diamond text-dark text-gradient text-lg top-0" aria-hidden="true"
+                <i class="ni ni-diamond text-dark text-gradient text-lg top-0" 
                     id="sidenavCardIcon"></i>
             </div>
             <div class="docs-info">

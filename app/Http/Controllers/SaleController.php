@@ -10,8 +10,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-
-
 class SaleController extends Controller
 {
     /**
@@ -21,7 +19,6 @@ class SaleController extends Controller
     {
         return view('page.sale.index');
     }
-
 
     public function getSales()
     {
@@ -39,6 +36,7 @@ class SaleController extends Controller
                             'quantity' => $detail->quantity,
                             'price' => $detail->price,
                             'subtotal' => number_format($detail->price * $detail->quantity, 2),
+                            'size' => $detail->size ? $detail->size->name : 'N/A', // Muestra la talla
                         ];
                     }),
                 ];
@@ -47,16 +45,18 @@ class SaleController extends Controller
         return response()->json($sales);
     }
 
-
     public function getSaleDetails($id)
     {
         try {
-            // Buscar la venta con las relaciones necesarias
-            $sale = Sale::with(['client', 'saleDetails.product'])->find($id);
+            // Buscar la venta con las relaciones necesarias, incluyendo la relación con las tallas de cada producto
+            $sale = Sale::with(['client', 'saleDetails.product.sizes', 'saleDetails.size']) // Incluir la relación 'sizes' de productos
+                ->find($id);
 
             if (!$sale) {
                 return response()->json(['message' => 'Venta no encontrada'], 404);
             }
+
+         
 
             // Formatear los datos de la venta
             return response()->json([
@@ -70,8 +70,15 @@ class SaleController extends Controller
                     return [
                         'product_name' => $detail->product->name,
                         'quantity' => $detail->quantity,
-                        'price' => (float) $detail->price, // Asegúrate de que sea un número
-                        'subtotal' => (float) ($detail->price * $detail->quantity), // Cálculo como número
+                        'price' => (float) $detail->price,
+                        'subtotal' => (float) ($detail->price * $detail->quantity),
+                        'size' => $detail->size ? $detail->size->name : 'N/A', // Muestra la talla del SaleDetail
+                        'product_sizes' => $detail->product->sizes->map(function ($size) { // Aquí obtenemos las tallas del producto
+                            return [
+                                'id' => $size->id,
+                                'name' => $size->name
+                            ];
+                        }),
                     ];
                 }),
             ]);
@@ -89,8 +96,6 @@ class SaleController extends Controller
     {
         //
     }
-
-
 
     public function changeStatus($id)
     {
@@ -150,7 +155,6 @@ class SaleController extends Controller
         return response()->json($sales);
     }
 
-
     public function getMonthlySales()
     {
         try {
@@ -186,18 +190,13 @@ class SaleController extends Controller
         return response()->json($sales);
     }
 
-
-
-
-
-
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
         try {
-            // Validar datos del request
+            // Validar los datos del request
             $validated = $request->validate([
                 'client_id' => 'required|exists:clients,id',
                 'tax' => 'required|numeric|min:0',
@@ -205,7 +204,8 @@ class SaleController extends Controller
                 'products.*.product_id' => 'required|exists:products,id',
                 'products.*.price' => 'required|numeric|min:0',
                 'products.*.quantity' => 'required|integer|min:1',
-                'products.*.discount' => 'required|numeric|min:0', // Ahora representa un monto fijo
+                'products.*.discount' => 'required|numeric|min:0',
+                'products.*.size_id' => 'required|exists:sizes,id',  // Asegúrate de validar el size_id
             ]);
 
             DB::beginTransaction();
@@ -232,13 +232,14 @@ class SaleController extends Controller
                 // Asegurar que el subtotal no sea negativo
                 $subtotal = max($subtotal, 0);
 
-                // Crear el detalle de la venta
+                // Crear el detalle de la venta con el tamaño
                 SaleDetail::create([
                     'sale_id' => $sale->id,
                     'product_id' => $product->id,
                     'quantity' => $productData['quantity'],
                     'price' => $productData['price'],
                     'discount' => $productData['discount'], // Se almacena el monto fijo del descuento
+                    'size_id' => $productData['size_id'], // Guardar el size_id
                 ]);
 
                 // Reducir el stock del producto
@@ -249,7 +250,6 @@ class SaleController extends Controller
             // Calcular el total con impuesto
             $totalWithTax = $total + ($total * $validated['tax'] / 100);
             $sale->update(['total' => $totalWithTax]);
-
 
             DB::commit();
 

@@ -98,6 +98,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/products/getProducts', [ProductController::class, 'getProducts'])->name('products.json');
     Route::get('/products/next-barcode', [ProductController::class, 'getNextBarcode'])->name('products.nextBarcode');
 
+    // Nueva ruta para obtener las tallas de un producto
+    Route::get('/products/{productId}/sizes', [ProductController::class, 'getSizes']);
+    
     Route::get('/products/top-selling', [ProductController::class, 'getTopSellingProducts']);
 
     Route::resource('/products', ProductController::class)->names([
